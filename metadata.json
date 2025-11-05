@@ -1,0 +1,5 @@
+{
+  "name": "Eli Perrett Portfolio",
+  "description": "A simple, clean, and minimal portfolio page to showcase 3D renders and digital art. This is a static HTML site that dynamically loads media from a GitHub repository.",
+  "requestFramePermissions": []
+}

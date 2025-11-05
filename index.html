@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eli Perrett | Creative</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Roboto+Mono:wght@100..700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Roboto Mono', 'monospace'],
+              display: ['Montserrat', 'sans-serif'],
+            },
+            transitionDuration: {
+              '700': '700ms',
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      @keyframes fade-slide-up {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-letter-in {
+        display: inline-block;
+        opacity: 0;
+        animation-name: fade-slide-up;
+        animation-duration: 0.3s;
+        animation-fill-mode: both;
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+      }
+      .animate-text-in {
+        opacity: 0;
+        animation-name: fade-slide-up;
+        animation-duration: 0.3s;
+        animation-fill-mode: both;
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+      }
+      @keyframes slide-in-from-left {
+        from {
+          opacity: 0;
+          transform: translateX(-80px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .animate-slide-in-left {
+        opacity: 0;
+        animation: slide-in-from-left 1.8s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+      }
+      @keyframes gentle-bob {
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-6px);
+        }
+      }
+      .animate-gentle-bob {
+        animation: gentle-bob 2.5s ease-in-out infinite;
+      }
+      .portfolio-item {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+        transition: opacity 1s cubic-bezier(0.165, 0.84, 0.44, 1), transform 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+      }
+      .portfolio-item.is-visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      body {
+        background: linear-gradient(to bottom, #F3F4F6, #D1D5DB); /* Tailwind gray-100 to gray-300 */
+        overflow-x: hidden;
+      }
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image: radial-gradient(circle, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+        background-size: 20px 20px;
+        z-index: 0;
+        pointer-events: none;
+      }
+      #root {
+        position: relative;
+        z-index: 1;
+      }
+      .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: 4px; /* Position underline below text */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 2px;
+        background-color: black;
+        transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+      .nav-link:hover::after {
+        width: 100%;
+      }
+      .hidden {
+        display: none;
+      }
+      @keyframes fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      .animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
+    </style>
+  <link rel="stylesheet" href="/index.css">
+</head>
+  <body class="text-gray-700">
+    <div id="root" class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <header class="flex flex-col md:flex-row md:justify-between md:items-center text-center md:text-left mb-12 sm:mb-16">
+        <div class="flex flex-col md:flex-row items-center">
+          <img
+            src="https://raw.githubusercontent.com/eperrett11/Media/main/media/eli-bike-logo.png"
+            alt="Eli Perrett Logo"
+            class="w-48 h-48 sm:w-56 sm:h-56 mb-6 md:mb-0 md:mr-8 lg:mr-12 flex-shrink-0 rounded-full animate-slide-in-left object-contain"
+          />
+          <div>
+            <h1 id="animated-header" class="font-display text-2xl sm:text-3xl lg:text-4xl font-black text-black mb-2">
+              <span class="tracking-wider">
+                ELI
+              </span>
+              <span>&nbsp;</span>
+              <span class="tracking-wider">
+                PERRETT
+              </span>
+              <span>&nbsp;</span>
+              <span class="tracking-wider font-light text-gray-600">
+                CREATIVE
+              </span>
+            </h1>
+            <p
+              class="text-lg text-gray-600 max-w-md sm:max-w-lg mx-auto md:mx-0 animate-text-in"
+              style="animation-delay: 1000ms"
+            >
+              Blending technology and artistry to help designers and brands
+              communicate ideas.
+            </p>
+          </div>
+        </div>
+        <nav class="mt-8 md:mt-0 md:mr-8 lg:mr-12">
+          <ul class="flex items-center justify-center space-x-2 sm:space-x-4">
+            <li>
+              <a href="#work" class="nav-link relative font-sans text-lg tracking-wide transition-colors duration-200 px-4 py-2 rounded-lg bg-gray-800 text-white md:bg-transparent md:text-gray-800 md:hover:text-black md:px-3 md:py-2 md:rounded-none">
+                Work
+              </a>
+            </li>
+            <li>
+              <a href="#about" class="nav-link relative font-sans text-lg tracking-wide transition-colors duration-200 px-4 py-2 rounded-lg bg-gray-800 text-white md:bg-transparent md:text-gray-800 md:hover:text-black md:px-3 md:py-2 md:rounded-none">
+                About
+              </a>
+            </li>
+            <li>
+              <a href="#contact" class="nav-link relative font-sans text-lg tracking-wide transition-colors duration-200 px-4 py-2 rounded-lg bg-gray-800 text-white md:bg-transparent md:text-gray-800 md:hover:text-black md:px-3 md:py-2 md:rounded-none">
+                Contact
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <div class="text-center my-16 sm:my-24">
+        <h2 class="text-sm font-medium uppercase text-gray-500 tracking-[0.4em]">
+          Selected Works
+        </h2>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mt-6 text-gray-400 animate-gentle-bob" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"></path>
+        </svg>
+      </div>
+
+      <main id="work">
+         <div id="loader" class="flex justify-center items-center py-24 text-center">
+            <div>
+                <svg class="animate-spin mx-auto h-10 w-10 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p class="mt-4 text-lg text-gray-600">Loading renders...</p>
+            </div>
+        </div>
+        <div id="portfolio-grid" class="hidden [column-count:2] md:[column-count:3] lg:[column-count:4] gap-4 sm:gap-6">
+            <!-- Renders will be dynamically inserted here -->
+        </div>
+      </main>
+
+       <div id="about" class="flex justify-center items-center py-20 sm:py-24">
+          <div class="text-center max-w-4xl animate-text-in" style="animation-delay: 100ms;">
+              <h2 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6 font-display tracking-tight">
+                  About Me
+              </h2>
+              <p class="text-lg text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+                  I am a 3D artist and visualizer with a passion for creating compelling imagery that tells a story. With a background in architecture and digital media, I specialize in bringing concepts to life through photorealistic renders, animations, and immersive experiences. My work is driven by a meticulous attention to detail and a deep understanding of light, form, and composition. I thrive on collaborating with creative teams to transform ambitious visions into tangible, impactful visuals.
+              </p>
+          </div>
+      </div>
+
+       <footer id="contact" class="text-center py-20 sm:py-24 mt-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+          Let's Connect
+        </h2>
+        <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+          Have a project in mind or just want to say hello? Feel free to reach out.
+        </p>
+        <a
+          href="mailto:hello@eli.com"
+          class="inline-block bg-gray-900 text-white font-bold py-3 px-8 rounded-lg hover:bg-black transition-colors text-lg"
+        >
+          hello@eli.com
+        </a>
+      </footer>
+    </div>
+
+    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
+        <button id="modal-prev" class="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 text-white bg-black bg-opacity-30 rounded-full p-2 hover:bg-opacity-50 transition-all z-20" aria-label="Previous image">
+             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+
+        <div id="modal-content" class="flex flex-col items-center">
+            <!-- Image or Video will be inserted here -->
+        </div>
+
+        <button id="modal-next" class="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 text-white bg-black bg-opacity-30 rounded-full p-2 hover:bg-opacity-50 transition-all z-20" aria-label="Next image">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </button>
+      
+        <button id="modal-close" class="absolute top-4 sm:top-6 right-4 sm:right-6 text-white bg-black bg-opacity-30 rounded-full p-2 hover:bg-opacity-50 transition-colors z-20" aria-label="Close">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    </div>
+
+    <script type="module">
+      document.addEventListener('DOMContentLoaded', () => {
+        const GITHUB_MEDIA_API_URL = 'https://api.github.com/repos/eperrett11/Media/contents/media';
+        const GITHUB_VIDEOS_API_URL = 'https://api.github.com/repos/eperrett11/Media/contents/VIDEOS';
+
+        let portfolioRenders = [];
+        let currentModalIndex = -1;
+
+        const grid = document.getElementById('portfolio-grid');
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modal-content');
+        const modalCloseBtn = document.getElementById('modal-close');
+        const modalNextBtn = document.getElementById('modal-next');
+        const modalPrevBtn = document.getElementById('modal-prev');
+
+        // --- Core Functions ---
+
+        const fetchRenders = async () => {
+            try {
+                const [mediaResponse, videosResponse] = await Promise.all([
+                    fetch(GITHUB_MEDIA_API_URL),
+                    fetch(GITHUB_VIDEOS_API_URL)
+                ]);
+
+                if (!mediaResponse.ok || !videosResponse.ok) {
+                    throw new Error('Failed to fetch media from GitHub.');
+                }
+                
+                const mediaFiles = await mediaResponse.json();
+                const videoFiles = await videosResponse.json();
+                const allFiles = [...(Array.isArray(mediaFiles) ? mediaFiles : []), ...(Array.isArray(videoFiles) ? videoFiles : [])];
+
+                if (allFiles.length === 0) {
+                   document.getElementById('loader').classList.add('hidden');
+                   grid.innerHTML = `<div class="text-center text-gray-500 bg-white p-8 rounded-lg shadow-sm col-span-full"><h3 class="text-xl font-semibold mb-2 text-gray-800">Your portfolio is empty.</h3><p>Upload files to your GitHub media folder.</p></div>`;
+                   return;
+                }
+                
+                const mediaMap = {};
+                const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+                const videoExtensions = ['.mp4', '.webm', '.mov'];
+                const frameRegex = /[\s_-]frame/i;
+                const normalizeName = name => name.replace(/[\s_-]/g, '-').toLowerCase();
+
+                for (const file of allFiles) {
+                    if (file.type !== 'file' || !file.download_url || file.name === 'eli-bike-logo.png') continue;
+                    const fileName = file.name;
+                    const extension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
+                    const rawBaseName = fileName.substring(0, fileName.lastIndexOf('.'));
+                    const title = rawBaseName.replace(/[-_]/g, ' ').replace(frameRegex, '').replace(/\b\w/g, l => l.toUpperCase());
+
+                    if (videoExtensions.includes(extension)) {
+                        const normalizedBaseName = normalizeName(rawBaseName);
+                        mediaMap[normalizedBaseName] = { ...mediaMap[normalizedBaseName], videoUrl: file.download_url, title };
+                    } else if (imageExtensions.includes(extension) && !fileName.match(frameRegex)) {
+                        const normalizedBaseName = normalizeName(rawBaseName);
+                        mediaMap[normalizedBaseName] = { ...mediaMap[normalizedBaseName], imageUrl: file.download_url, title };
+                    }
+                }
+                 for (const file of allFiles) {
+                    if (file.type !== 'file' || !file.download_url) continue;
+                    const fileName = file.name;
+                    const extension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
+                    if (imageExtensions.includes(extension) && fileName.match(frameRegex)) {
+                        const rawBaseName = fileName.substring(0, fileName.lastIndexOf('.'));
+                        const videoBaseNameRaw = rawBaseName.replace(frameRegex, '');
+                        const normalizedVideoBaseName = normalizeName(videoBaseNameRaw);
+                        if (mediaMap[normalizedVideoBaseName] && mediaMap[normalizedVideoBaseName].videoUrl) {
+                            mediaMap[normalizedVideoBaseName].imageUrl = file.download_url;
+                        }
+                    }
+                }
+                
+                const fetchedRenders = Object.values(mediaMap)
+                    .filter(item => item.imageUrl || item.videoUrl)
+                    .map((item, index) => ({ id: index + 1, ...item }));
+                
+                portfolioRenders = fetchedRenders;
+                renderGrid(portfolioRenders);
+
+            } catch (error) {
+                console.error("Error fetching renders:", error);
+                document.getElementById('loader').classList.add('hidden');
+                grid.innerHTML = `<div class="text-center text-red-500 bg-red-100 p-8 rounded-lg shadow-sm col-span-full"><h3 class="text-xl font-semibold mb-2 text-red-800">Could not load portfolio.</h3><p>${error.message}</p></div>`;
+            }
+        };
+
+        const renderGrid = (renders) => {
+            const grid = document.getElementById('portfolio-grid');
+            const loader = document.getElementById('loader');
+            grid.innerHTML = '';
+
+            renders.forEach((render, index) => {
+                const item = document.createElement('div');
+                item.className = 'group relative overflow-hidden rounded-lg cursor-pointer shadow-lg mb-4 sm:mb-6 [break-inside:avoid] portfolio-item bg-gray-200';
+                item.onclick = () => openModal(index);
+                
+                let contentHTML = '';
+
+                if (render.videoUrl && render.imageUrl) {
+                    contentHTML = `
+                        <img src="${render.imageUrl}" alt="${render.title}" class="relative block w-full h-auto transform transition-all duration-700 ease-in-out group-hover:scale-110 transition-opacity duration-300 group-hover:opacity-0" loading="lazy">
+                        <video src="${render.videoUrl}" class="absolute top-0 left-0 w-full h-full object-cover transform transition-all duration-700 ease-in-out group-hover:scale-110 transition-opacity duration-300 opacity-0 group-hover:opacity-100" muted loop playsinline preload="auto"></video>
+                    `;
+                } else if (render.videoUrl) {
+                    contentHTML = `
+                        <video src="${render.videoUrl}" class="relative block w-full h-auto transform transition-all duration-700 ease-in-out group-hover:scale-110" muted loop playsinline preload="metadata"></video>
+                    `;
+                }
+                else if (render.imageUrl) {
+                     contentHTML = `<img src="${render.imageUrl}" alt="${render.title}" class="relative block w-full h-auto transform transition-transform duration-700 ease-in-out group-hover:scale-110" loading="lazy">`;
+                }
+
+                item.innerHTML = `
+                    ${contentHTML}
+                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-500 z-10"></div>
+                    <div class="absolute bottom-0 left-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 hidden md:block">
+                        <h3 class="text-white font-bold text-lg">${render.title}</h3>
+                    </div>
+                `;
+                
+                grid.appendChild(item);
+                setupHoverListeners(item);
+            });
+
+            loader.classList.add('hidden');
+            grid.classList.remove('hidden');
+
+            const observer = new IntersectionObserver((entries, observer) => {
+              entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('is-visible');
+                  observer.unobserve(entry.target);
+                }
+              });
+            }, { threshold: 0.1 });
+
+            const items = grid.querySelectorAll('.portfolio-item');
+            items.forEach(item => {
+              observer.observe(item);
+            });
+        };
+
+        const openModal = (index) => {
+            if (index < 0 || index >= portfolioRenders.length) return;
+            currentModalIndex = index;
+            const render = portfolioRenders[index];
+            
+            let contentHTML = '';
+            if (render.videoUrl) {
+                contentHTML = `<video key="${render.id}" src="${render.videoUrl}" class="w-auto h-auto max-w-[80vw] max-h-[80vh] object-contain" controls autoplay loop poster="${render.imageUrl || ''}"></video>`;
+            } else {
+                contentHTML = `<img key="${render.id}" src="${render.imageUrl}" alt="${render.title}" class="w-auto h-auto max-w-[80vw] max-h-[80vh] object-contain rounded-lg shadow-2xl">`;
+            }
+            contentHTML += `<h3 class="mt-4 text-white text-center font-light text-base sm:text-lg opacity-90">${render.title}</h3>`;
+            
+            modalContent.innerHTML = contentHTML;
+            modal.classList.remove('hidden');
+            modal.classList.add('animate-fade-in');
+            window.addEventListener('keydown', handleKeyDown);
+        };
+
+        const closeModal = () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('animate-fade-in');
+            modalContent.innerHTML = '';
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+        
+        const showNext = () => openModal((currentModalIndex + 1) % portfolioRenders.length);
+        const showPrevious = () => openModal((currentModalIndex - 1 + portfolioRenders.length) % portfolioRenders.length);
+
+        // --- Event Handlers & Setup ---
+
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'ArrowRight') showNext();
+            if (e.key === 'ArrowLeft') showPrevious();
+        };
+        
+        const setupHoverListeners = (element) => {
+            const video = element.querySelector('video');
+            if (!video) return;
+            element.addEventListener('mouseenter', () => video.play().catch(e => {}));
+            element.addEventListener('mouseleave', () => {
+                video.pause();
+                video.currentTime = 0;
+            });
+        };
+
+        const setupHeaderAnimations = () => {
+          const header = document.getElementById('animated-header');
+          const textNodes = Array.from(header.children).map(child => child.textContent.trim());
+          header.innerHTML = '';
+          let totalDelay = 800;
+          const letterDelay = 50;
+
+          textNodes.forEach((text, textIndex) => {
+            const spanContainer = document.createElement('span');
+            if (textIndex === 0 || textIndex === 2) spanContainer.className = 'tracking-wider';
+            if (textIndex === 4) spanContainer.className = 'tracking-wider font-light text-gray-600';
+            
+            text.split('').forEach((char) => {
+              const charSpan = document.createElement('span');
+              charSpan.className = 'animate-letter-in';
+              charSpan.textContent = char;
+              charSpan.style.animationDelay = `${totalDelay}ms`;
+              spanContainer.appendChild(charSpan);
+              totalDelay += letterDelay;
+            });
+
+            if (text === '&nbsp;') {
+               const spaceSpan = document.createElement('span');
+               spaceSpan.innerHTML = '&nbsp;';
+               header.appendChild(spaceSpan);
+            } else {
+               header.appendChild(spanContainer);
+            }
+
+            if (textIndex % 2 === 0 && textIndex < textNodes.length -1) {
+                const spaceSpan = document.createElement('span');
+                spaceSpan.innerHTML = '&nbsp;';
+                spaceSpan.className = 'animate-letter-in';
+                spaceSpan.style.animationDelay = `${totalDelay}ms`;
+                header.appendChild(spaceSpan);
+                totalDelay += letterDelay;
+            }
+          });
+        };
+
+        // --- Initialisation ---
+        
+        setupHeaderAnimations();
+
+        modalCloseBtn.addEventListener('click', closeModal);
+        modalNextBtn.addEventListener('click', showNext);
+        modalPrevBtn.addEventListener('click', showPrevious);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+        
+        fetchRenders();
+      });
+    </script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
