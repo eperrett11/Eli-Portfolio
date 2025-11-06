@@ -18,6 +18,14 @@
             },
             transitionDuration: {
               '700': '700ms',
+            },
+            animation: {
+              'scroll': 'scroll 30s linear infinite',
+            },
+            keyframes: {
+              scroll: {
+                'to': { transform: 'translateX(-50%)' },
+              }
             }
           },
         },
@@ -150,6 +158,22 @@
       .back {
         transform: rotateY(180deg);
       }
+      /* Scroller Animation */
+      .scroller {
+        -webkit-mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+        mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+      }
+      .scroller:hover .scroller__inner {
+        animation-play-state: paused;
+      }
+      .scroller__inner img {
+        filter: grayscale(1);
+        transition: filter 0.1s ease-in-out, transform 0.1s ease-in-out;
+      }
+      .scroller__inner img:hover {
+        filter: grayscale(0) drop-shadow(0 0 8px rgba(0, 0, 0, 0.5));
+        transform: scale(1.25);
+      }
     </style>
 </head>
   <body class="text-gray-700">
@@ -234,31 +258,75 @@
             </div>
         </section>
 
-        <section id="about-section" class="content-section hidden text-center py-16 sm:py-24 animate-fade-in">
-             <div class="max-w-4xl mx-auto">
-                <div class="flex justify-center mb-12">
-                    <div class="flip-container" style="width: 28rem; height: 28rem;">
-                        <div class="flipper w-full h-full">
-                            <div class="front w-full h-full">
-                                <img src="https://raw.githubusercontent.com/eperrett11/Media/main/media/Eli_Headshot1.png" alt="Eli Perrett Headshot" class="w-full h-full rounded-2xl object-cover">
-                            </div>
-                            <div class="back w-full h-full">
-                                <img src="https://raw.githubusercontent.com/eperrett11/Media/main/media/Eli_Headshot2.png" alt="Eli Perrett Headshot (alternate)" class="w-full h-full rounded-2xl object-cover">
+        <section id="about-section" class="content-section hidden py-16 sm:py-24 animate-fade-in">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+                    <!-- Left Column: Image -->
+                    <div class="flex-shrink-0 w-full md:w-auto">
+                        <div class="flip-container w-80 h-80 sm:w-96 sm:h-96 md:w-[448px] md:h-[448px] mx-auto md:mx-0">
+                            <div class="flipper w-full h-full">
+                                <div class="front w-full h-full">
+                                    <img src="https://raw.githubusercontent.com/eperrett11/Media/main/media/Eli_Headshot1.png" alt="Eli Perrett Headshot" class="w-full h-full object-contain">
+                                </div>
+                                <div class="back w-full h-full">
+                                    <img src="https://raw.githubusercontent.com/eperrett11/Media/main/media/Eli_Headshot2.png" alt="Eli Perrett Headshot (alternate)" class="w-full h-full object-contain">
+                                </div>
                             </div>
                         </div>
                     </div>
+        
+                    <!-- Right Column: Text -->
+                    <div class="text-center md:text-left">
+                        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                            About
+                        </h2>
+                        <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                            I thrive at the intersection of design technology and artistry - utilizing 3D modeling, rendering software, and emerging AI tools to uniquely communicate concepts.
+                        </p>
+                        <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                            When I’m not at my desk, I’m usually seeking out challenges in the backcountry, cycling, surfing, or wherever adventure leads.
+                        </p>
+                        <p class="text-lg text-gray-600">
+                            Currently based in Bend, OR.
+                        </p>
+                    </div>
                 </div>
-                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-                    About Me
-                </h2>
-                <p class="text-lg text-gray-600 mb-8 balanced-text">
-                    I am a digital artist and 3D generalist passionate about creating compelling visuals that tell a story. With a background in industrial design and a love for cinematic lighting, I specialize in bringing concepts to life through detailed modeling, texturing, and rendering. My work aims to bridge the gap between realism and imagination.
-                </p>
-                 <p class="text-lg text-gray-600 balanced-text">
-                    When I'm not in front of a computer, you can find me exploring mountain trails on my bike or sketching in a coffee shop. I believe that inspiration comes from everywhere, and I'm constantly seeking new experiences to fuel my creativity.
-                </p>
+
+                <div class="mt-24 sm:mt-32 text-center">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-12">
+                        Software Expertise
+                    </h2>
+                    <div class="scroller group relative max-w-4xl mx-auto overflow-hidden">
+                        <div class="scroller__inner flex w-max gap-x-10 animate-scroll py-4">
+                            <!-- Icons List 1 -->
+                            <img class="h-16" src="https://cdn.simpleicons.org/blender" alt="Blender" title="Blender">
+                            <img class="h-16" src="https://cdn.simpleicons.org/cinema4d" alt="Cinema 4D" title="Cinema 4D">
+                            <img class="h-16" src="https://cdn.simpleicons.org/3dsmax" alt="3ds Max" title="3ds Max">
+                            <img class="h-16" src="https://cdn.simpleicons.org/autodeskmaya" alt="Autodesk Maya" title="Autodesk Maya">
+                            <img class="h-16" src="https://cdn.simpleicons.org/zbrush" alt="ZBrush" title="ZBrush">
+                            <img class="h-16" src="https://cdn.simpleicons.org/unrealengine" alt="Unreal Engine" title="Unreal Engine">
+                            <img class="h-16" src="https://cdn.simpleicons.org/unity" alt="Unity" title="Unity">
+                            <img class="h-16" src="https://cdn.simpleicons.org/adobephotoshop" alt="Adobe Photoshop" title="Adobe Photoshop">
+                            <img class="h-16" src="https://cdn.simpleicons.org/adobeaftereffects" alt="Adobe After Effects" title="Adobe After Effects">
+                            <img class="h-16" src="https://cdn.simpleicons.org/adobesubstance3dpainter" alt="Adobe Substance 3D Painter" title="Adobe Substance 3D Painter">
+                            <img class="h-16" src="https://cdn.simpleicons.org/redshift" alt="Redshift" title="Redshift">
+                             <!-- Icons List 2 (Duplicate for seamless loop) -->
+                            <img class="h-16" src="https://cdn.simpleicons.org/blender" alt="Blender" title="Blender">
+                            <img class="h-16" src="https://cdn.simpleicons.org/cinema4d" alt="Cinema 4D" title="Cinema 4D">
+                            <img class="h-16" src="https://cdn.simpleicons.org/3dsmax" alt="3ds Max" title="3ds Max">
+                            <img class="h-16" src="https://cdn.simpleicons.org/autodeskmaya" alt="Autodesk Maya" title="Autodesk Maya">
+                            <img class="h-16" src="https://cdn.simpleicons.org/zbrush" alt="ZBrush" title="ZBrush">
+                            <img class="h-16" src="https://cdn.simpleicons.org/unrealengine" alt="Unreal Engine" title="Unreal Engine">
+                            <img class="h-16" src="https://cdn.simpleicons.org/unity" alt="Unity" title="Unity">
+                            <img class="h-16" src="https://cdn.simpleicons.org/adobephotoshop" alt="Adobe Photoshop" title="Adobe Photoshop">
+                            <img class="h-16" src="https://cdn.simpleicons.org/adobeaftereffects" alt="Adobe After Effects" title="Adobe After Effects">
+                            <img class="h-16" src="https://cdn.simpleicons.org/adobesubstance3dpainter" alt="Adobe Substance 3D Painter" title="Adobe Substance 3D Painter">
+                            <img class="h-16" src="https://cdn.simpleicons.org/redshift" alt="Redshift" title="Redshift">
+                        </div>
+                    </div>
+                </div>
                 
-                <div class="mt-24 sm:mt-32">
+                <div class="mt-24 sm:mt-32 text-center">
                     <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
                         Let's Connect
                     </h2>
@@ -274,7 +342,7 @@
                             <span id="email-text" class="font-sans">eperrett11@gmail.com</span>
                             <span id="copy-icon-container" class="transition-transform duration-300 group-hover:rotate-[-12deg]">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 256 256" fill="currentColor">
-                                    <path d="M216,32H88a8,8,0,0,0-8,8V80H40a8,8,0,0,0-8,8V216a8,8,0,0,0,8,8H168a8,8,0,0,0,8-8V176h40a8,8,0,0,0,8-8V40A8,8,0,0,0,216,32ZM160,208H48V96H160Zm48-48H176V88a8,8,0,0,0-8-8H96V48H208Z"></path>
+                                    <path d="M216,32H88a8,8,0,0,0-8,8V80H40a8,8,0,0,0-8,8V216a8,8,0,0,0,8,8H168a8,8,0,0,0,8,8V176h40a8,8,0,0,0,8-8V40A8,8,0,0,0,216,32ZM160,208H48V96H160Zm48-48H176V88a8,8,0,0,0-8-8H96V48H208Z"></path>
                                 </svg>
                             </span>
                             <span id="check-icon-container" class="hidden">
@@ -284,6 +352,20 @@
                             </span>
                         </button>
                     </div>
+
+                    <div class="flex justify-center items-center space-x-6 mt-8">
+                        <a href="https://www.linkedin.com/in/eli-perrett" target="_blank" rel="noopener noreferrer" class="text-gray-900 hover:opacity-75 transition-opacity duration-300" aria-label="LinkedIn Profile">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.instagram.com/eperrett" target="_blank" rel="noopener noreferrer" class="text-gray-900 hover:opacity-75 transition-opacity duration-300" aria-label="Instagram Profile">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
+                               <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.936 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.314.936 20.647.523 19.86.227c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.06 1.17-.249 1.805-.413 2.227-.217.562-.477.96-.896 1.382-.42.419-.819.679-1.381.896-.422.164-1.057.36-2.227.413-1.266.057-1.646.07-4.85.07s-3.585-.015-4.85-.074c-1.17-.06-1.805-.249-2.227-.413-.562-.217-.96-.477-1.382-.896-.419-.42-.679-.819-.896-1.381-.164-.422-.36-1.057-.413-2.227-.057-1.266-.07-1.646-.07-4.85s.015-3.585.074-4.85c.06-1.17.249-1.805.413-2.227.217-.562.477.96.896-1.382.42-.419.819.679 1.381-.896.422-.164 1.057.36 2.227.413C8.415 2.172 8.796 2.16 12 2.16zm0 3.36c-3.405 0-6.162 2.76-6.162 6.162s2.757 6.162 6.162 6.162 6.162-2.76 6.162-6.162c0-3.403-2.757-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </section>
