@@ -24,9 +24,6 @@
       }
     </script>
     <style>
-      html {
-        scroll-behavior: smooth;
-      }
       @keyframes fade-slide-up {
         from {
           opacity: 0;
@@ -89,6 +86,7 @@
       body {
         background: linear-gradient(to bottom, #F3F4F6, #D1D5DB); /* Tailwind gray-100 to gray-300 */
         overflow-x: hidden;
+        overflow-y: scroll;
       }
       body::before {
         content: '';
@@ -117,6 +115,9 @@
       .nav-link:hover::after {
         width: 100%;
       }
+      .nav-link[aria-current="page"]::after {
+        width: 100%;
+      }
       .hidden {
         display: none;
       }
@@ -125,8 +126,31 @@
         to { opacity: 1; }
       }
       .animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
+      .balanced-text {
+        text-wrap: balance;
+      }
+      /* Flip Card Animation */
+      .flip-container {
+        perspective: 1000px;
+      }
+      .flipper {
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      .flip-container:hover .flipper {
+        transform: rotateY(180deg);
+      }
+      .front, .back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+      }
+      .back {
+        transform: rotateY(180deg);
+      }
     </style>
-  <link rel="stylesheet" href="/index.css">
 </head>
   <body class="text-gray-700">
     <div id="root" class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -154,7 +178,7 @@
               </h1>
             </div>
             <p
-              class="text-lg text-gray-600 max-w-md sm:max-w-lg mx-auto md:mx-0 animate-text-in"
+              class="text-lg text-gray-600 max-w-md sm:max-w-lg mx-auto md:mx-0 animate-text-in balanced-text"
               style="animation-delay: 1000ms"
             >
               Blending technology and artistry to help designers and brands
@@ -165,73 +189,107 @@
         <nav class="mt-8 md:mt-0 md:mr-8 lg:mr-12">
           <ul class="flex items-center justify-center space-x-2 sm:space-x-4">
             <li>
-              <a href="#work" class="nav-link relative font-sans text-lg tracking-wide transition-colors duration-200 px-4 py-2 rounded-lg bg-gray-800 text-white md:bg-transparent md:text-gray-800 md:hover:text-black md:px-3 md:py-2 md:rounded-none">
+              <a href="#" data-section="work-section" aria-current="page" class="nav-link relative font-sans text-lg tracking-wide transition-colors duration-200 px-4 py-2 rounded-lg bg-gray-800 text-white md:bg-transparent md:text-gray-800 md:hover:text-black md:px-3 md:py-2 md:rounded-none">
                 Work
               </a>
             </li>
-            <li>
-              <a href="#about" class="nav-link relative font-sans text-lg tracking-wide transition-colors duration-200 px-4 py-2 rounded-lg bg-gray-800 text-white md:bg-transparent md:text-gray-800 md:hover:text-black md:px-3 md:py-2 md:rounded-none">
+             <li>
+              <a href="#" data-section="about-section" class="nav-link relative font-sans text-lg tracking-wide transition-colors duration-200 px-4 py-2 rounded-lg bg-gray-800 text-white md:bg-transparent md:text-gray-800 md:hover:text-black md:px-3 md:py-2 md:rounded-none">
                 About
-              </a>
-            </li>
-            <li>
-              <a href="#contact" class="nav-link relative font-sans text-lg tracking-wide transition-colors duration-200 px-4 py-2 rounded-lg bg-gray-800 text-white md:bg-transparent md:text-gray-800 md:hover:text-black md:px-3 md:py-2 md:rounded-none">
-                Contact
               </a>
             </li>
           </ul>
         </nav>
       </header>
 
-      <div class="text-center my-16 sm:my-24">
-        <h2 class="text-sm font-medium uppercase text-gray-500 tracking-[0.4em]">
-          Selected Works
-        </h2>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mt-6 text-gray-400 animate-gentle-bob" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"></path>
-        </svg>
-      </div>
-
-      <main id="work">
-         <div id="loader" class="flex justify-center items-center py-24 text-center">
-            <div>
-                <svg class="animate-spin mx-auto h-10 w-10 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      <main>
+        <section id="work-section" class="content-section">
+            <div class="text-center my-16 sm:my-24">
+                <h2 class="text-sm font-medium uppercase text-gray-500 tracking-[0.4em]">
+                Selected Works
+                </h2>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mt-6 text-gray-400 animate-gentle-bob" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"></path>
                 </svg>
-                <p class="mt-4 text-lg text-gray-600">Loading renders...</p>
             </div>
-        </div>
-        <div id="portfolio-grid" class="hidden [column-count:2] md:[column-count:3] lg:[column-count:4] gap-4 sm:gap-6">
-            <!-- Renders will be dynamically inserted here -->
-        </div>
+            <div id="loader" class="flex justify-center items-center py-24 text-center">
+                <div>
+                    <svg class="animate-spin mx-auto h-10 w-10 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p class="mt-4 text-lg text-gray-600">Loading renders...</p>
+                </div>
+            </div>
+            <div id="portfolio-grid" class="hidden [column-count:2] md:[column-count:3] lg:[column-count:4] gap-4 sm:gap-6">
+                <!-- Renders will be dynamically inserted here -->
+            </div>
+             <div id="back-to-top-container" class="hidden text-center my-16 sm:my-24">
+                <a href="#root" class="group inline-flex flex-col items-center text-sm font-medium uppercase text-gray-500 tracking-[0.4em] hover:text-gray-800 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-300 transform group-hover:-translate-y-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75" />
+                    </svg>
+                    Back to Top
+                </a>
+            </div>
+        </section>
+
+        <section id="about-section" class="content-section hidden text-center py-16 sm:py-24 animate-fade-in">
+             <div class="max-w-4xl mx-auto">
+                <div class="flex justify-center mb-12">
+                    <div class="flip-container" style="width: 28rem; height: 28rem;">
+                        <div class="flipper w-full h-full">
+                            <div class="front w-full h-full">
+                                <img src="https://raw.githubusercontent.com/eperrett11/Media/main/media/Eli_Headshot1.png" alt="Eli Perrett Headshot" class="w-full h-full rounded-2xl object-cover">
+                            </div>
+                            <div class="back w-full h-full">
+                                <img src="https://raw.githubusercontent.com/eperrett11/Media/main/media/Eli_Headshot2.png" alt="Eli Perrett Headshot (alternate)" class="w-full h-full rounded-2xl object-cover">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                    About Me
+                </h2>
+                <p class="text-lg text-gray-600 mb-8 balanced-text">
+                    I am a digital artist and 3D generalist passionate about creating compelling visuals that tell a story. With a background in industrial design and a love for cinematic lighting, I specialize in bringing concepts to life through detailed modeling, texturing, and rendering. My work aims to bridge the gap between realism and imagination.
+                </p>
+                 <p class="text-lg text-gray-600 balanced-text">
+                    When I'm not in front of a computer, you can find me exploring mountain trails on my bike or sketching in a coffee shop. I believe that inspiration comes from everywhere, and I'm constantly seeking new experiences to fuel my creativity.
+                </p>
+                
+                <div class="mt-24 sm:mt-32">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                        Let's Connect
+                    </h2>
+                    <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto balanced-text">
+                        Have a project in mind or just want to say hello?
+                    </p>
+                    <div class="group relative inline-block mt-4">
+                        <!-- The animated border/glow effect -->
+                        <div class="absolute -inset-0.5 rounded-xl bg-black opacity-0 blur-lg transition duration-500 group-hover:opacity-30 group-hover:duration-200"></div>
+                        
+                        <!-- The actual button -->
+                        <button id="copy-email-btn" class="relative inline-flex items-center gap-x-3 bg-gray-900 text-gray-300 font-bold py-3 px-8 rounded-xl border border-gray-700 hover:text-white focus:outline-none transition-colors duration-300 text-lg">
+                            <span id="email-text" class="font-sans">eperrett11@gmail.com</span>
+                            <span id="copy-icon-container" class="transition-transform duration-300 group-hover:rotate-[-12deg]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 256 256" fill="currentColor">
+                                    <path d="M216,32H88a8,8,0,0,0-8,8V80H40a8,8,0,0,0-8,8V216a8,8,0,0,0,8,8H168a8,8,0,0,0,8-8V176h40a8,8,0,0,0,8-8V40A8,8,0,0,0,216,32ZM160,208H48V96H160Zm48-48H176V88a8,8,0,0,0-8-8H96V48H208Z"></path>
+                                </svg>
+                            </span>
+                            <span id="check-icon-container" class="hidden">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-400" viewBox="0 0 256 256" fill="currentColor">
+                                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
       </main>
 
-       <div id="about" class="flex justify-center items-center py-20 sm:py-24">
-          <div class="text-center max-w-4xl animate-text-in" style="animation-delay: 100ms;">
-              <h2 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6 font-display tracking-tight">
-                  About Me
-              </h2>
-              <p class="text-lg text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-                  I am a 3D artist and visualizer with a passion for creating compelling imagery that tells a story. With a background in architecture and digital media, I specialize in bringing concepts to life through photorealistic renders, animations, and immersive experiences. My work is driven by a meticulous attention to detail and a deep understanding of light, form, and composition. I thrive on collaborating with creative teams to transform ambitious visions into tangible, impactful visuals.
-              </p>
-          </div>
-      </div>
-
-       <footer id="contact" class="text-center py-20 sm:py-24 mt-16">
-        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-          Let's Connect
-        </h2>
-        <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-          Have a project in mind or just want to say hello? Feel free to reach out.
-        </p>
-        <a
-          href="mailto:hello@eli.com"
-          class="inline-block bg-gray-900 text-white font-bold py-3 px-8 rounded-lg hover:bg-black transition-colors text-lg"
-        >
-          hello@eli.com
-        </a>
-      </footer>
     </div>
 
     <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
@@ -258,13 +316,71 @@
         </button>
     </div>
 
-    <script type="module">
+    <script>
       document.addEventListener('DOMContentLoaded', () => {
-        const GITHUB_MEDIA_API_URL = 'https://api.github.com/repos/eperrett11/Media/contents/media';
-        const GITHUB_VIDEOS_API_URL = 'https://api.github.com/repos/eperrett11/Media/contents/VIDEOS';
-
+        // --- Portfolio Specific --- (Variables needed by other functions)
         let portfolioRenders = [];
         let currentModalIndex = -1;
+        let rendersFetched = false;
+
+        // --- Back to Top Button ---
+        const backToTopContainer = document.getElementById('back-to-top-container');
+        let handleScroll = () => {}; // Declare here to be available for nav handler
+        if (backToTopContainer) {
+            const backToTopBtn = backToTopContainer.querySelector('a');
+
+            handleScroll = () => {
+                const workSection = document.getElementById('work-section');
+                const isWorkVisible = workSection && !workSection.classList.contains('hidden');
+                const hasScrolledEnough = window.scrollY > window.innerHeight * 0.75;
+                const hasContent = portfolioRenders && portfolioRenders.length > 0;
+
+                if (isWorkVisible && hasScrolledEnough && hasContent) {
+                    backToTopContainer.classList.remove('hidden');
+                    backToTopContainer.classList.add('animate-fade-in');
+                } else {
+                    backToTopContainer.classList.add('hidden');
+                    backToTopContainer.classList.remove('animate-fade-in');
+                }
+            };
+            
+            window.addEventListener('scroll', handleScroll, { passive: true });
+
+            backToTopBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+        
+        // --- Navigation ---
+        const navLinks = document.querySelectorAll('nav a');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.dataset.section;
+                
+                // Update nav link styles
+                navLinks.forEach(navLink => navLink.removeAttribute('aria-current'));
+                link.setAttribute('aria-current', 'page');
+                
+                // Toggle content visibility
+                contentSections.forEach(section => {
+                    if (section.id === targetId) {
+                        section.classList.remove('hidden');
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                });
+
+                // Re-evaluate back-to-top button visibility after section change
+                setTimeout(handleScroll, 0); 
+            });
+        });
+
+        const GITHUB_MEDIA_API_URL = 'https://api.github.com/repos/eperrett11/Media/contents/media';
+        const GITHUB_VIDEOS_API_URL = 'https://api.github.com/repos/eperrett11/Media/contents/VIDEOS';
 
         const grid = document.getElementById('portfolio-grid');
         const modal = document.getElementById('modal');
@@ -272,10 +388,11 @@
         const modalCloseBtn = document.getElementById('modal-close');
         const modalNextBtn = document.getElementById('modal-next');
         const modalPrevBtn = document.getElementById('modal-prev');
-
+        
         // --- Core Functions ---
-
         const fetchRenders = async () => {
+            if (rendersFetched) return; // Prevent multiple fetches
+            rendersFetched = true;
             try {
                 const [mediaResponse, videosResponse] = await Promise.all([
                     fetch(GITHUB_MEDIA_API_URL),
@@ -301,9 +418,11 @@
                 const videoExtensions = ['.mp4', '.webm', '.mov'];
                 const frameRegex = /[\s_-]frame/i;
                 const normalizeName = name => name.replace(/[\s_-]/g, '-').toLowerCase();
+                const ignoredFiles = ['eli-bike-logo.png', 'Eli_Headshot1.png', 'Eli_Headshot2.png'];
+
 
                 for (const file of allFiles) {
-                    if (file.type !== 'file' || !file.download_url || file.name === 'eli-bike-logo.png') continue;
+                    if (file.type !== 'file' || !file.download_url || ignoredFiles.includes(file.name)) continue;
                     const fileName = file.name;
                     const extension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
                     const rawBaseName = fileName.substring(0, fileName.lastIndexOf('.'));
@@ -337,6 +456,7 @@
                 
                 portfolioRenders = fetchedRenders;
                 renderGrid(portfolioRenders);
+                handleScroll(); // Check if button should be visible on load
 
             } catch (error) {
                 console.error("Error fetching renders:", error);
@@ -431,7 +551,6 @@
         const showPrevious = () => openModal((currentModalIndex - 1 + portfolioRenders.length) % portfolioRenders.length);
 
         // --- Event Handlers & Setup ---
-
         const handleKeyDown = (e) => {
             if (e.key === 'Escape') closeModal();
             if (e.key === 'ArrowRight') showNext();
@@ -489,7 +608,6 @@
         };
 
         // --- Initialisation ---
-        
         setupHeaderAnimations();
 
         modalCloseBtn.addEventListener('click', closeModal);
@@ -498,10 +616,36 @@
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
         });
+
+        // --- Copy Email Button ---
+        const copyEmailBtn = document.getElementById('copy-email-btn');
+        if (copyEmailBtn) {
+            const emailTextSpan = document.getElementById('email-text');
+            const copyIconContainer = document.getElementById('copy-icon-container');
+            const checkIconContainer = document.getElementById('check-icon-container');
+            const originalButtonText = emailTextSpan.textContent;
+
+            copyEmailBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(originalButtonText).then(() => {
+                    emailTextSpan.textContent = 'Copied!';
+                    copyIconContainer.classList.add('hidden');
+                    checkIconContainer.classList.remove('hidden');
+
+                    setTimeout(() => {
+                        emailTextSpan.textContent = originalButtonText;
+                        copyIconContainer.classList.remove('hidden');
+                        checkIconContainer.classList.add('hidden');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy email to clipboard:', err);
+                    alert('Failed to copy email. Please copy it manually.');
+                });
+            });
+        }
         
+        // Fetch renders immediately for the work page
         fetchRenders();
       });
     </script>
-  <script type="module" src="/index.tsx"></script>
 </body>
 </html>
