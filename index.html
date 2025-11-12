@@ -245,7 +245,7 @@
               </a>
             </li>
              <li>
-              <a href="#" data-section="about-section" class="nav-link relative font-sans text-lg tracking-wide transition-colors duration-200 px-4 py-2 rounded-lg bg-gray-800 text-white md:bg-transparent md:text-gray-800 md:hover:text-black md:px-3 md:py-2 md:rounded-none">
+              <a href="#" data-section="about-section" class="nav-link relative font-sans text-lg tracking-wide transition-colors duration-200 px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 md:bg-transparent md:text-gray-800 md:hover:text-black md:px-3 md:py-2 md:rounded-none">
                 Info
               </a>
             </li>
@@ -394,7 +394,6 @@
         let portfolioRenders = [];
         let currentModalIndex = -1;
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-        const isMobile = window.innerWidth < 768; // Corresponds to Tailwind's 'md' breakpoint
 
         // --- EDIT DESCRIPTIONS HERE ---
         const PORTFOLIO_DESCRIPTIONS = {
@@ -404,14 +403,6 @@
         
         let rendersFetched = false;
 
-        // --- Mobile Navigation Setup ---
-        if (isMobile) {
-            const aboutSection = document.getElementById('about-section');
-            if (aboutSection) {
-                aboutSection.classList.remove('hidden');
-            }
-        }
-
         // --- Back to Top Button ---
         const backToTopContainer = document.getElementById('back-to-top-container');
         let handleScroll = () => {}; // Declare here to be available for nav handler
@@ -420,7 +411,7 @@
 
             handleScroll = () => {
                 const workSection = document.getElementById('work-section');
-                const isWorkVisible = workSection && (isMobile || !workSection.classList.contains('hidden'));
+                const isWorkVisible = workSection && !workSection.classList.contains('hidden');
                 const hasScrolledEnough = window.scrollY > window.innerHeight * 0.75;
                 const hasContent = portfolioRenders && portfolioRenders.length > 0;
 
@@ -448,10 +439,37 @@
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
-                const targetId = link.dataset.section;
+                const clickedLink = e.currentTarget;
+                const targetId = clickedLink.dataset.section;
 
-                // Animate about card flip on desktop if needed
-                if (!isMobile && targetId === 'about-section') {
+                // Don't do anything if clicking the already active link
+                if (clickedLink.getAttribute('aria-current') === 'page') {
+                    return;
+                }
+
+                // Update nav styling for all devices
+                navLinks.forEach(navLink => {
+                    navLink.removeAttribute('aria-current');
+                    // Mobile style updates: set to inactive
+                    navLink.classList.remove('bg-gray-800', 'text-white');
+                    navLink.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                });
+                clickedLink.setAttribute('aria-current', 'page');
+                // Mobile style updates: set to active
+                clickedLink.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                clickedLink.classList.add('bg-gray-800', 'text-white');
+                
+                // Tab switching logic for all devices
+                contentSections.forEach(section => {
+                    if (section.id === targetId) {
+                        section.classList.remove('hidden');
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                });
+                
+                // Animate about card flip when switching to 'about-section'
+                if (targetId === 'about-section') {
                     const flipper = document.querySelector('#about-section .flipper');
                     if (flipper) {
                         flipper.classList.remove('animate-flip-once');
@@ -464,50 +482,11 @@
                     }
                 }
                 
-                // Handle active link state for all devices
-                navLinks.forEach(navLink => navLink.removeAttribute('aria-current'));
-                link.setAttribute('aria-current', 'page');
-                
-                if (isMobile) {
-                    const targetElement = document.getElementById(targetId);
-                    if (targetElement) {
-                         // If the target is the about section, trigger the card flip animation after scroll.
-                        if (targetId === 'about-section') {
-                            const flipper = document.querySelector('#about-section .flipper');
-                            if (flipper) {
-                                const observer = new IntersectionObserver((entries) => {
-                                    // isIntersecting is true when the element comes into view.
-                                    if (entries[0].isIntersecting) {
-                                        // Animate the flip
-                                        flipper.classList.remove('animate-flip-once'); // Reset first
-                                        setTimeout(() => {
-                                            flipper.classList.add('animate-flip-once');
-                                            flipper.addEventListener('animationend', () => {
-                                                flipper.classList.remove('animate-flip-once');
-                                            }, { once: true });
-                                        }, 50); // A small delay ensures the class removal is processed.
-                                        
-                                        // Stop observing once the animation is triggered.
-                                        observer.disconnect();
-                                    }
-                                }, { threshold: 0.8 }); // Trigger when 80% of the element is visible.
-                                
-                                observer.observe(targetElement);
-                            }
-                        }
-                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                } else {
-                    // Desktop tab switching logic
-                    contentSections.forEach(section => {
-                        if (section.id === targetId) {
-                            section.classList.remove('hidden');
-                        } else {
-                            section.classList.add('hidden');
-                        }
-                    });
-                    setTimeout(handleScroll, 0); 
-                }
+                // Scroll to top of the page when switching tabs for a clean transition.
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                // Update visibility of back-to-top button after content visibility has changed.
+                setTimeout(handleScroll, 50);
             });
         });
 
