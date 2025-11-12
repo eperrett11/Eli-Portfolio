@@ -626,21 +626,26 @@
                 video.loop = true;
                 video.playsInline = true;
                 video.preload = "auto";
-                video.className = 'absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300 ease-in-out group-hover-video';
-                contentWrapper.appendChild(video);
-                
-                const onFirstPlay = () => {
-                    video.classList.remove('opacity-0', 'group-hover-video');
-                    const posterImg = contentWrapper.querySelector('img');
-                    if (posterImg) {
-                        posterImg.classList.remove('group-hover-img');
-                        posterImg.classList.add('opacity-0');
-                    }
-                    video.removeEventListener('playing', onFirstPlay);
-                };
-                video.addEventListener('playing', onFirstPlay);
-        
-                if (!isTouchDevice) {
+
+                // === CHANGE: show video immediately on touch devices; keep hover-reveal on desktop ===
+                if (isTouchDevice) {
+                    // Mobile/touch: make video visible without waiting for `playing`
+                    video.className = 'absolute inset-0 w-full h-full object-cover';
+                } else {
+                    // Desktop/hover devices: start hidden, reveal once it plays (on hover)
+                    video.className = 'absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300 ease-in-out group-hover-video';
+
+                    const onFirstPlay = () => {
+                        video.classList.remove('opacity-0', 'group-hover-video');
+                        const posterImg = contentWrapper.querySelector('img');
+                        if (posterImg) {
+                            posterImg.classList.remove('group-hover-img');
+                            posterImg.classList.add('opacity-0');
+                        }
+                        video.removeEventListener('playing', onFirstPlay);
+                    };
+                    video.addEventListener('playing', onFirstPlay);
+
                     item.addEventListener('mouseenter', () => {
                         video.play().catch(e => {});
                     });
@@ -648,6 +653,9 @@
                         video.pause();
                     });
                 }
+                // === END CHANGE ===
+
+                contentWrapper.appendChild(video);
             }
         
             item.appendChild(contentWrapper);
