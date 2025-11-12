@@ -93,19 +93,17 @@
         will-change: transform;
         backface-visibility: hidden;
       }
-      /* Hover effects only for devices that support it (e.g., mouse) */
-      @media (hover: hover) and (pointer: fine) {
-        .masonry-item.is-visible:hover {
-          z-index: 10;
-        }
-        .masonry-item:hover .item-content-wrapper {
-          transform: scale(1.03);
-        }
-        .group:hover .group-hover-img { opacity: 0; }
-        .group:hover .group-hover-video { opacity: 1; }
-        .group:hover .group-hover-overlay { opacity: 1; }
-        .group:hover .group-hover-title { opacity: 1; }
+      /* Hover effects only for non-touch devices, added via JS */
+      .can-hover .masonry-item.is-visible:hover {
+        z-index: 10;
       }
+      .can-hover .masonry-item:hover .item-content-wrapper {
+        transform: scale(1.03);
+      }
+      .can-hover .group:hover .group-hover-img { opacity: 0; }
+      .can-hover .group:hover .group-hover-video { opacity: 1; }
+      .can-hover .group:hover .group-hover-overlay { opacity: 1; }
+      .can-hover .group:hover .group-hover-title { opacity: 1; }
       body {
         background-color: #F3F4F6; /* Tailwind gray-100 */
         overflow-x: hidden;
@@ -163,7 +161,7 @@
         transform-style: preserve-3d;
         transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
       }
-      .flip-container:hover .flipper {
+      .can-hover .flip-container:hover .flipper {
         transform: rotateY(180deg);
       }
       .front, .back {
@@ -394,6 +392,9 @@
         let portfolioRenders = [];
         let currentModalIndex = -1;
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (!isTouchDevice) {
+            document.body.classList.add('can-hover');
+        }
 
         // --- EDIT DESCRIPTIONS HERE ---
         const PORTFOLIO_DESCRIPTIONS = {
@@ -738,7 +739,8 @@
             
             let mediaHTML = '';
             if (render.videoUrl) {
-                mediaHTML = `<video key="${render.id}" src="${render.videoUrl}" class="w-auto h-auto max-w-[80vw] max-h-[70vh] object-contain" controls autoplay loop playsinline poster="${render.imageUrl || ''}"></video>`;
+                const autoplayAttribute = isTouchDevice ? '' : 'autoplay';
+                mediaHTML = `<video key="${render.id}" src="${render.videoUrl}" class="w-auto h-auto max-w-[80vw] max-h-[70vh] object-contain" controls ${autoplayAttribute} loop playsinline poster="${render.imageUrl || ''}"></video>`;
             } else {
                 mediaHTML = `<img key="${render.id}" src="${render.imageUrl}" alt="${render.title}" class="w-auto h-auto max-w-[80vw] max-h-[70vh] object-contain rounded-lg shadow-2xl">`;
             }
