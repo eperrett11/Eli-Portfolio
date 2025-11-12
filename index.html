@@ -191,6 +191,16 @@
         transform: translateZ(0);
         -webkit-transform: translateZ(0); /* For older Safari */
       }
+      /* Mobile-specific modal navigation */
+      @media (max-width: 1023px) {
+        #modal-nav-container {
+          position: fixed;
+          bottom: 1.5rem;
+          left: 50%;
+          transform: translateX(-50%);
+          margin-top: 0;
+        }
+      }
     </style>
 </head>
   <body class="text-gray-700">
@@ -358,7 +368,7 @@
             <!-- Image or Video will be inserted here -->
         </div>
 
-        <div class="flex items-center justify-center mt-4 space-x-8">
+        <div id="modal-nav-container" class="flex items-center justify-center mt-4 space-x-8">
             <button id="modal-prev" class="text-white bg-black bg-opacity-30 rounded-full p-2 hover:bg-opacity-50 transition-all z-20" aria-label="Previous image">
                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
@@ -461,6 +471,30 @@
                 if (isMobile) {
                     const targetElement = document.getElementById(targetId);
                     if (targetElement) {
+                         // If the target is the about section, trigger the card flip animation after scroll.
+                        if (targetId === 'about-section') {
+                            const flipper = document.querySelector('#about-section .flipper');
+                            if (flipper) {
+                                const observer = new IntersectionObserver((entries) => {
+                                    // isIntersecting is true when the element comes into view.
+                                    if (entries[0].isIntersecting) {
+                                        // Animate the flip
+                                        flipper.classList.remove('animate-flip-once'); // Reset first
+                                        setTimeout(() => {
+                                            flipper.classList.add('animate-flip-once');
+                                            flipper.addEventListener('animationend', () => {
+                                                flipper.classList.remove('animate-flip-once');
+                                            }, { once: true });
+                                        }, 50); // A small delay ensures the class removal is processed.
+                                        
+                                        // Stop observing once the animation is triggered.
+                                        observer.disconnect();
+                                    }
+                                }, { threshold: 0.8 }); // Trigger when 80% of the element is visible.
+                                
+                                observer.observe(targetElement);
+                            }
+                        }
                         targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                 } else {
@@ -725,7 +759,7 @@
             
             let mediaHTML = '';
             if (render.videoUrl) {
-                mediaHTML = `<video key="${render.id}" src="${render.videoUrl}" class="w-auto h-auto max-w-[80vw] max-h-[70vh] object-contain" controls autoplay loop poster="${render.imageUrl || ''}"></video>`;
+                mediaHTML = `<video key="${render.id}" src="${render.videoUrl}" class="w-auto h-auto max-w-[80vw] max-h-[70vh] object-contain" controls autoplay loop playsinline poster="${render.imageUrl || ''}"></video>`;
             } else {
                 mediaHTML = `<img key="${render.id}" src="${render.imageUrl}" alt="${render.title}" class="w-auto h-auto max-w-[80vw] max-h-[70vh] object-contain rounded-lg shadow-2xl">`;
             }
