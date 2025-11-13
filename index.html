@@ -3,7 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Eli Perrett | Creative</title>
+    <title>Eli Perrett | Creative Portfolio</title>
+
+    <!-- SEO & Metadata -->
+    <meta name="description" content="Creative portfolio of Eli Perrett, showcasing 3D renders, digital art, and design visualizations." />
+    <meta name="author" content="Eli Perrett" />
+    <link rel="canonical" href="https://eliperrett.com/" /> <!-- Replace with your actual domain -->
+
+    <!-- Favicons -->
+    <!-- Generate favicons from your logo at https://realfavicongenerator.net/ and place them in the root folder -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://eliperrett.com/" /> <!-- Replace with your actual domain -->
+    <meta property="og:title" content="Eli Perrett | Creative Portfolio" />
+    <meta property="og:description" content="Creative portfolio of Eli Perrett, showcasing 3D renders, digital art, and design visualizations." />
+    <meta property="og:image" content="https://raw.githubusercontent.com/eperrett11/Media/main/media/3-Heceta-Vignette-1.JPG" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://eliperrett.com/" /> <!-- Replace with your actual domain -->
+    <meta property="twitter:title" content="Eli Perrett | Creative Portfolio" />
+    <meta property="twitter:description" content="Creative portfolio of Eli Perrett, showcasing 3D renders, digital art, and design visualizations." />
+    <meta property="twitter:image" content="https://raw.githubusercontent.com/eperrett11/Media/main/media/3-Heceta-Vignette-1.JPG" />
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Roboto+Mono:wght@100..700&display=swap" rel="stylesheet">
@@ -389,6 +417,7 @@
         // --- Portfolio Specific --- (Variables needed by other functions)
         let portfolioRenders = [];
         let currentModalIndex = -1;
+        let savedScrollY = 0;
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         if (!isTouchDevice) {
             document.body.classList.add('can-hover');
@@ -582,57 +611,69 @@
             }
         };
 
-        const createGridItem = (render) => {
-            const item = document.createElement('div');
-            const baseItemClasses = 'masonry-item relative overflow-hidden rounded-lg cursor-pointer shadow-lg w-full [break-inside:avoid]';
-            item.className = `${baseItemClasses} group`;
-            item.onclick = () => openModalByOriginalId(render.id);
-        
-            const contentWrapper = document.createElement('div');
-            contentWrapper.className = 'item-content-wrapper';
-        
-            if (render.imageUrl) {
-                const img = document.createElement('img');
-                img.src = render.imageUrl;
-                img.alt = render.title;
-                img.loading = "lazy";
-                const imageClasses = 'w-full h-full object-cover transition-opacity duration-300 ease-in-out';
-                img.className = render.videoUrl ? `${imageClasses} group-hover-img` : imageClasses;
-                img.addEventListener('load', () => {
-                    if (!item.style.aspectRatio) {
-                        item.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
-                    }
-                }, { once: true });
-                contentWrapper.appendChild(img);
-            } else if (render.videoUrl) {
-                const videoForSizing = document.createElement('video');
-                videoForSizing.src = render.videoUrl;
-                videoForSizing.preload = "metadata";
-                videoForSizing.className = 'w-full h-full object-cover';
-                videoForSizing.addEventListener('loadedmetadata', () => {
-                     if (!item.style.aspectRatio) {
-                        item.style.aspectRatio = `${videoForSizing.videoWidth} / ${videoForSizing.videoHeight}`;
-                    }
-                }, { once: true });
-                contentWrapper.appendChild(videoForSizing);
-            }
-        
-if (render.videoUrl) {
-  const video = document.createElement('video');
-  video.src = render.videoUrl;
-  video.muted = true;
-  video.loop = true;
-  video.playsInline = true;
-  video.preload = "auto";
+const createGridItem = (render) => {
+  const item = document.createElement('div');
+  const baseItemClasses =
+    'masonry-item relative overflow-hidden rounded-lg cursor-pointer shadow-lg w-full [break-inside:avoid]';
+  item.className = `${baseItemClasses} group`;
+  item.onclick = () => openModalByOriginalId(render.id);
 
-  if (isTouchDevice) {
-    // MOBILE: do NOT add the video into the grid at all.
-    // Just use the image as the poster tile.
-    // So simply return here and skip appending `video`.
-    return item; // or just skip everything after this inside the if-block
-  } else {
-    // DESKTOP: keep your existing hover behaviour
-    video.className = 'absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300 ease-in-out group-hover-video';
+  const contentWrapper = document.createElement('div');
+  contentWrapper.className = 'item-content-wrapper';
+
+  // 1) IMAGE / POSTER (always used for the tile)
+  if (render.imageUrl) {
+    const img = document.createElement('img');
+    img.src = render.imageUrl;
+    img.alt = render.title;
+    img.loading = 'lazy';
+
+    const imageClasses =
+      'w-full h-full object-cover transition-opacity duration-300 ease-in-out';
+    // Keep group-hover-img so desktop hover logic still works
+    img.className = render.videoUrl ? `${imageClasses} group-hover-img` : imageClasses;
+
+    img.addEventListener(
+      'load',
+      () => {
+        if (!item.style.aspectRatio) {
+          item.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+        }
+      },
+      { once: true }
+    );
+
+    contentWrapper.appendChild(img);
+  } else if (render.videoUrl) {
+    // If somehow we have only a video and no image, use it just for sizing
+    const videoForSizing = document.createElement('video');
+    videoForSizing.src = render.videoUrl;
+    videoForSizing.preload = 'metadata';
+    videoForSizing.className = 'w-full h-full object-cover';
+
+    videoForSizing.addEventListener(
+      'loadedmetadata',
+      () => {
+        if (!item.style.aspectRatio) {
+          item.style.aspectRatio = `${videoForSizing.videoWidth} / ${videoForSizing.videoHeight}`;
+        }
+      },
+      { once: true }
+    );
+
+    contentWrapper.appendChild(videoForSizing);
+  }
+
+  // 2) HOVER VIDEO PREVIEW - DESKTOP ONLY
+  if (render.videoUrl && !isTouchDevice) {
+    const video = document.createElement('video');
+    video.src = render.videoUrl;
+    video.muted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.preload = 'auto';
+    video.className =
+      'absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300 ease-in-out group-hover-video';
 
     const onFirstPlay = () => {
       video.classList.remove('opacity-0', 'group-hover-video');
@@ -654,22 +695,24 @@ if (render.videoUrl) {
 
     contentWrapper.appendChild(video);
   }
-}
 
-        
-            item.appendChild(contentWrapper);
-        
-            const titleOverlay = document.createElement('div');
-            titleOverlay.className = 'absolute inset-0 bg-gradient-to-t from-black/75 to-transparent opacity-0 group-hover-overlay transition-opacity duration-300 pointer-events-none z-10';
-            item.appendChild(titleOverlay);
-        
-            const title = document.createElement('h3');
-            title.textContent = render.title;
-            title.className = 'absolute bottom-0 left-0 p-4 text-white font-semibold text-lg opacity-0 group-hover-title transition-opacity duration-500 delay-100 pointer-events-none z-10';
-            item.appendChild(title);
-            
-            return item;
-        };
+  item.appendChild(contentWrapper);
+
+  // 3) TITLE OVERLAY (unchanged)
+  const titleOverlay = document.createElement('div');
+  titleOverlay.className =
+    'absolute inset-0 bg-gradient-to-t from-black/75 to-transparent opacity-0 group-hover-overlay transition-opacity duration-300 pointer-events-none z-10';
+  item.appendChild(titleOverlay);
+
+  const title = document.createElement('h3');
+  title.textContent = render.title;
+  title.className =
+    'absolute bottom-0 left-0 p-4 text-white font-semibold text-lg opacity-0 group-hover-title transition-opacity duration-500 delay-100 pointer-events-none z-10';
+  item.appendChild(title);
+
+  return item;
+};
+
 
         const renderGrid = (renders) => {
             const grid = document.getElementById('portfolio-grid');
@@ -762,7 +805,16 @@ if (render.videoUrl) {
             modalContent.innerHTML = mediaHTML + textContainerHTML;
             modal.classList.remove('hidden');
             modal.classList.add('animate-fade-in');
-            document.body.style.overflow = 'hidden';
+            
+            if (isTouchDevice) {
+                savedScrollY = window.scrollY;
+                document.body.style.position = 'fixed';
+                document.body.style.top = `-${savedScrollY}px`;
+                document.body.style.width = '100%';
+            } else {
+                document.body.style.overflow = 'hidden';
+            }
+
             window.addEventListener('keydown', handleKeyDown);
 
             if (isTouchDevice) {
@@ -775,7 +827,16 @@ if (render.videoUrl) {
             modal.classList.add('hidden');
             modal.classList.remove('animate-fade-in');
             modalContent.innerHTML = '';
-            document.body.style.overflow = '';
+            
+            if (isTouchDevice) {
+                document.body.style.position = '';
+                document.body.style.top = '';
+                document.body.style.width = '';
+                window.scrollTo(0, savedScrollY);
+            } else {
+                document.body.style.overflow = '';
+            }
+
             window.removeEventListener('keydown', handleKeyDown);
 
             if (isTouchDevice) {
