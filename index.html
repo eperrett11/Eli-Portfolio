@@ -124,8 +124,6 @@
       .can-hover .masonry-item:hover .item-content-wrapper {
         transform: scale(1.03);
       }
-      .can-hover .group:hover .group-hover-img { opacity: 0; }
-      .can-hover .group:hover .group-hover-video { opacity: 1; }
       .can-hover .group:hover .group-hover-overlay { opacity: 1; }
       .can-hover .group:hover .group-hover-title { opacity: 1; }
       body {
@@ -289,7 +287,7 @@
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    <p class="mt-4 text-lg text-gray-600">Loading renders...</p>
+                    <p class="mt-4 text-lg text-gray-600">Loading portfolio...</p>
                 </div>
             </div>
             <div id="portfolio-grid" class="hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -385,7 +383,7 @@
 
     <div id="modal" class="hidden fixed inset-0 bg-black lg:bg-opacity-90 flex flex-col items-center justify-center z-50 p-4">
         <div id="modal-content" class="flex flex-col items-center">
-            <!-- Image or Video will be inserted here -->
+            <!-- Image will be inserted here -->
         </div>
 
         <div id="modal-nav-container" class="flex items-center justify-center mt-4 space-x-8">
@@ -411,7 +409,7 @@
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         // --- Portfolio Specific --- (Variables needed by other functions)
-        let portfolioRenders = [];
+        let portfolioItems = [];
         let currentModalIndex = -1;
         let savedScrollY = 0;
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -425,7 +423,7 @@
           'project-x-view-2': 'A detailed look at the second view of Project X, focusing on material and lighting.',
         };
         
-        let rendersFetched = false;
+        let mediaFetched = false;
 
         // --- Back to Top Button ---
         const backToTopContainer = document.getElementById('back-to-top-container');
@@ -437,7 +435,7 @@
                 const workSection = document.getElementById('work-section');
                 const isWorkVisible = workSection && !workSection.classList.contains('hidden');
                 const hasScrolledEnough = window.scrollY > window.innerHeight * 0.75;
-                const hasContent = portfolioRenders && portfolioRenders.length > 0;
+                const hasContent = portfolioItems && portfolioItems.length > 0;
 
                 if (isWorkVisible && hasScrolledEnough && hasContent) {
                     backToTopContainer.classList.remove('hidden');
@@ -466,24 +464,19 @@
                 const clickedLink = e.currentTarget;
                 const targetId = clickedLink.dataset.section;
 
-                // Don't do anything if clicking the already active link
                 if (clickedLink.getAttribute('aria-current') === 'page') {
                     return;
                 }
 
-                // Update nav styling for all devices
                 navLinks.forEach(navLink => {
                     navLink.removeAttribute('aria-current');
-                    // Mobile style updates: set to inactive
                     navLink.classList.remove('bg-gray-800', 'text-white');
                     navLink.classList.add('bg-gray-200', 'text-gray-700');
                 });
                 clickedLink.setAttribute('aria-current', 'page');
-                // Mobile style updates: set to active
                 clickedLink.classList.remove('bg-gray-200', 'text-gray-700');
                 clickedLink.classList.add('bg-gray-800', 'text-white');
                 
-                // Tab switching logic for all devices
                 contentSections.forEach(section => {
                     if (section.id === targetId) {
                         section.classList.remove('hidden');
@@ -492,7 +485,6 @@
                     }
                 });
                 
-                // Animate about card flip when switching to 'about-section'
                 if (targetId === 'about-section') {
                     const flipper = document.querySelector('#about-section .flipper');
                     if (flipper) {
@@ -506,15 +498,13 @@
                     }
                 }
                 
-                // Scroll to top of the page when switching tabs for a clean transition.
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-
-                // Update visibility of back-to-top button after content visibility has changed.
                 setTimeout(handleScroll, 50);
             });
         });
 
         const GITHUB_MEDIA_API_URL = 'https://api.github.com/repos/eperrett11/Media/contents/media';
+        const GITHUB_VIDEOS_API_URL = 'https://api.github.com/repos/eperrett11/Media/contents/videos';
 
         const grid = document.getElementById('portfolio-grid');
         const modal = document.getElementById('modal');
@@ -524,196 +514,164 @@
         const modalPrevBtn = document.getElementById('modal-prev');
         
         // --- Core Functions ---
-        const fetchRenders = async () => {
-            if (rendersFetched) return;
-            rendersFetched = true;
+        const fetchAllMedia = async () => {
+            if (mediaFetched) return;
+            mediaFetched = true;
             try {
-                const response = await fetch(GITHUB_MEDIA_API_URL);
+                const [mediaResponse, videosResponse] = await Promise.all([
+                    fetch(GITHUB_MEDIA_API_URL),
+                    fetch(GITHUB_VIDEOS_API_URL)
+                ]);
 
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch media from GitHub. Status: ${response.status}`);
+                if (!mediaResponse.ok || !videosResponse.ok) {
+                    throw new Error(`Failed to fetch media from GitHub. Status: ${mediaResponse.status}, ${videosResponse.status}`);
                 }
                 
-                const allFiles = await response.json();
+                const allMediaFiles = await mediaResponse.json();
+                const allVideoRepoFiles = await videosResponse.json();
 
-                if (!Array.isArray(allFiles)) {
-                    console.error("GitHub API did not return a file list array:", allFiles);
-                    throw new Error('Received an invalid response from the GitHub API.');
-                }
+                // --- Process Images ---
+                const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+                const ignoredFiles = ['eli-bike-logo.png', 'Eli_Headshot1.png', 'Eli_Headshot2.png'];
 
-                if (allFiles.length === 0) {
+                const imageFiles = allMediaFiles.filter(file => {
+                    if (file.type !== 'file' || !file.download_url || ignoredFiles.includes(file.name)) {
+                        return false;
+                    }
+                    const extension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+                    return imageExtensions.includes(extension);
+                });
+                
+                const images = imageFiles.map((file) => {
+                    const rawBaseName = file.name.substring(0, file.name.lastIndexOf('.'));
+                    const titleName = rawBaseName.replace(/^\d+[a-zA-Z]?-/i, ''); 
+                    const title = titleName.replace(/[-_]/g, ' ').trim().replace(/\b\w/g, l => l.toUpperCase());
+                    const key = rawBaseName.replace(/[\s_-]/g, '-').toLowerCase();
+
+                    return {
+                        type: 'image',
+                        imageUrl: file.download_url,
+                        title: title,
+                        originalName: file.name,
+                        description: PORTFOLIO_DESCRIPTIONS[key] || ''
+                    };
+                });
+
+                // --- Process Videos ---
+                const posterMap = new Map();
+                allVideoRepoFiles
+                    .filter(file => imageExtensions.includes(file.name.substring(file.name.lastIndexOf('.')).toLowerCase()))
+                    .forEach(file => {
+                        const key = file.name.split(' - ')[0];
+                        posterMap.set(key, file.download_url);
+                    });
+                
+                const videoFiles = allVideoRepoFiles.filter(file => file.name.toLowerCase().endsWith('.mp4'));
+
+                const videos = videoFiles.map(file => {
+                    const rawBaseName = file.name.substring(0, file.name.lastIndexOf('.'));
+                    const titleName = rawBaseName.replace(/^\d+[a-zA-Z]?-/i, '');
+                    const title = titleName.replace(/[-_]/g, ' ').trim().replace(/\b\w/g, l => l.toUpperCase());
+                    const key = rawBaseName.replace(/[\s_-]/g, '-').toLowerCase();
+
+                    return {
+                        type: 'video',
+                        videoUrl: file.download_url,
+                        posterUrl: posterMap.get(rawBaseName) || '',
+                        title: title,
+                        originalName: file.name,
+                        description: PORTFOLIO_DESCRIPTIONS[key] || ''
+                    };
+                });
+
+                portfolioItems = [...images, ...videos]
+                    .sort((a, b) => (a.originalName || '').localeCompare(b.originalName || ''));
+                
+                if (portfolioItems.length === 0) {
                    document.getElementById('loader').classList.add('hidden');
-                   grid.innerHTML = `<div class="text-center text-gray-500 bg-white p-8 rounded-lg shadow-sm col-span-full"><h3 class="text-xl font-semibold mb-2 text-gray-800">Your portfolio is empty.</h3><p>Upload files to your GitHub media folder.</p></div>`;
+                   grid.innerHTML = `<div class="text-center text-gray-500 bg-white p-8 rounded-lg shadow-sm col-span-full"><h3 class="text-xl font-semibold mb-2 text-gray-800">Your portfolio is empty.</h3><p>Upload media to your GitHub repository.</p></div>`;
                    grid.classList.remove('hidden');
                    return;
                 }
-                
-                const mediaMap = {};
-                const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
-                const videoExtensions = ['.mp4', '.webm', '.mov'];
-                const frameRegex = /[\s_-]frame/i;
-                const normalizeName = name => name.replace(/[\s_-]/g, '-').toLowerCase();
-                const ignoredFiles = ['eli-bike-logo.png', 'Eli_Headshot1.png', 'Eli_Headshot2.png'];
 
-
-                for (const file of allFiles) {
-                    if (file.type !== 'file' || !file.download_url || ignoredFiles.includes(file.name)) continue;
-                    const fileName = file.name;
-                    const extension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
-                    const rawBaseName = fileName.substring(0, fileName.lastIndexOf('.'));
-                    const titleName = rawBaseName.replace(/^\d+[a-zA-Z]?-/i, ''); // Strip prefix like '1a-' or '1-' for the title.
-                    const title = titleName.replace(/[-_]/g, ' ').replace(frameRegex, '').trim().replace(/\b\w/g, l => l.toUpperCase());
-
-                    if (videoExtensions.includes(extension)) {
-                        const normalizedBaseName = normalizeName(rawBaseName);
-                        mediaMap[normalizedBaseName] = { ...mediaMap[normalizedBaseName], videoUrl: file.download_url, title, originalName: fileName };
-                    } else if (imageExtensions.includes(extension) && !fileName.match(frameRegex)) {
-                        const normalizedBaseName = normalizeName(rawBaseName);
-                        mediaMap[normalizedBaseName] = { ...mediaMap[normalizedBaseName], imageUrl: file.download_url, title, originalName: fileName };
-                    }
-                }
-                 for (const file of allFiles) {
-                    if (file.type !== 'file' || !file.download_url) continue;
-                    const fileName = file.name;
-                    const extension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
-                    if (imageExtensions.includes(extension) && fileName.match(frameRegex)) {
-                        const rawBaseName = fileName.substring(0, fileName.lastIndexOf('.'));
-                        const videoBaseNameRaw = rawBaseName.replace(frameRegex, '');
-                        const normalizedVideoBaseName = normalizeName(videoBaseNameRaw);
-                        if (mediaMap[normalizedVideoBaseName] && mediaMap[normalizedVideoBaseName].videoUrl) {
-                            mediaMap[normalizedVideoBaseName].imageUrl = file.download_url;
-                        }
-                    }
-                }
+                portfolioItems.forEach((item, index) => {
+                    item.id = index;
+                });
                 
-                for (const key in mediaMap) {
-                    if (PORTFOLIO_DESCRIPTIONS[key]) {
-                        mediaMap[key].description = PORTFOLIO_DESCRIPTIONS[key];
-                    }
-                }
-                
-                portfolioRenders = Object.values(mediaMap)
-                    .filter(item => item.imageUrl || item.videoUrl)
-                    .map((item, index) => ({ id: index + 1, ...item }));
-                
-                renderGrid(portfolioRenders);
+                renderGrid(portfolioItems);
                 handleScroll();
 
             } catch (error) {
-                console.error("Error fetching renders:", error);
+                console.error("Error fetching portfolio:", error);
                 document.getElementById('loader').classList.add('hidden');
                 grid.innerHTML = `<div class="text-center text-red-500 bg-red-100 p-8 rounded-lg shadow-sm col-span-full"><h3 class="text-xl font-semibold mb-2 text-red-800">Could not load portfolio.</h3><p>${error.message}</p></div>`;
                 grid.classList.remove('hidden');
             }
         };
 
-const createGridItem = (render) => {
-  const item = document.createElement('div');
-  const baseItemClasses =
-    'masonry-item relative overflow-hidden rounded-lg cursor-pointer shadow-lg w-full [break-inside:avoid]';
-  item.className = `${baseItemClasses} group`;
-  item.onclick = () => openModalByOriginalId(render.id);
+        const createGridItem = (itemData) => {
+            const item = document.createElement('div');
+            const baseItemClasses = 'masonry-item relative overflow-hidden rounded-lg cursor-pointer shadow-lg w-full [break-inside:avoid]';
+            item.className = `${baseItemClasses} group`;
+            item.onclick = () => openModal(itemData.id);
 
-  const contentWrapper = document.createElement('div');
-  contentWrapper.className = 'item-content-wrapper';
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = 'item-content-wrapper';
 
-  // 1) IMAGE / POSTER
-  if (render.imageUrl) {
-    const img = document.createElement('img');
-    img.src = render.imageUrl;
-    img.alt = render.title;
-    img.loading = 'lazy';
+            if (itemData.type === 'video') {
+                const video = document.createElement('video');
+                video.src = itemData.videoUrl;
+                video.poster = itemData.posterUrl;
+                video.muted = true;
+                video.loop = true;
+                video.playsInline = true;
+                video.className = 'w-full h-full object-cover';
+                video.preload = 'metadata';
 
-    const imageClasses =
-      'w-full h-full object-cover transition-opacity duration-300 ease-in-out';
+                video.addEventListener('loadedmetadata', () => {
+                    if (!item.style.aspectRatio) {
+                        item.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
+                    }
+                }, { once: true });
+                
+                if (!isTouchDevice) {
+                    item.addEventListener('mouseenter', () => video.play().catch(e => console.log("Autoplay prevented on hover.")));
+                    item.addEventListener('mouseleave', () => {
+                        video.pause();
+                        video.currentTime = 0;
+                    });
+                }
+                contentWrapper.appendChild(video);
+            } else { // 'image'
+                const img = document.createElement('img');
+                img.src = itemData.imageUrl;
+                img.alt = itemData.title;
+                img.loading = 'lazy';
+                img.className = 'w-full h-full object-cover';
 
-    // keep group-hover-img so desktop hover behaviour still works
-    img.className = render.videoUrl
-      ? `${imageClasses} group-hover-img`
-      : imageClasses;
+                img.addEventListener('load', () => {
+                    if (!item.style.aspectRatio) {
+                        item.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+                    }
+                }, { once: true });
+                contentWrapper.appendChild(img);
+            }
 
-    img.addEventListener(
-      'load',
-      () => {
-        if (!item.style.aspectRatio) {
-          item.style.aspectRatio = `${img.naturalWidth} / img.naturalHeight`;
-        }
-      },
-      { once: true }
-    );
+            item.appendChild(contentWrapper);
 
-    contentWrapper.appendChild(img);
-  } else if (render.videoUrl) {
-    // video-only item, use video just to set aspect ratio
-    const videoForSizing = document.createElement('video');
-    videoForSizing.src = render.videoUrl;
-    videoForSizing.preload = 'metadata';
-    videoForSizing.className = 'w-full h-full object-cover';
+            const titleOverlay = document.createElement('div');
+            titleOverlay.className = 'absolute inset-0 bg-gradient-to-t from-black/75 to-transparent opacity-0 group-hover-overlay transition-opacity duration-300 pointer-events-none z-10';
+            item.appendChild(titleOverlay);
 
-    videoForSizing.addEventListener(
-      'loadedmetadata',
-      () => {
-        if (!item.style.aspectRatio) {
-          item.style.aspectRatio = `${videoForSizing.videoWidth} / ${videoForSizing.videoHeight}`;
-        }
-      },
-      { once: true }
-    );
+            const title = document.createElement('h3');
+            title.textContent = itemData.title;
+            title.className = 'absolute bottom-0 left-0 p-4 text-white font-semibold text-lg opacity-0 group-hover-title transition-opacity duration-500 delay-100 pointer-events-none z-10';
+            item.appendChild(title);
 
-    contentWrapper.appendChild(videoForSizing);
-  }
+            return item;
+        };
 
-  // 2) DESKTOP HOVER VIDEO ONLY (NOT on touch devices)
-  if (render.videoUrl && !isTouchDevice) {
-    const video = document.createElement('video');
-    video.src = render.videoUrl;
-    video.muted = true;
-    video.loop = true;
-    video.playsInline = true;
-    video.preload = 'auto';
-    video.className =
-      'absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300 ease-in-out group-hover-video';
-
-    const onFirstPlay = () => {
-      video.classList.remove('opacity-0', 'group-hover-video');
-      const posterImg = contentWrapper.querySelector('img');
-      if (posterImg) {
-        posterImg.classList.remove('group-hover-img');
-        posterImg.classList.add('opacity-0');
-      }
-      video.removeEventListener('playing', onFirstPlay);
-    };
-    video.addEventListener('playing', onFirstPlay);
-
-    item.addEventListener('mouseenter', () => {
-      video.play().catch(() => {});
-    });
-    item.addEventListener('mouseleave', () => {
-      video.pause();
-    });
-
-    contentWrapper.appendChild(video);
-  }
-
-  item.appendChild(contentWrapper);
-
-  // 3) TITLE OVERLAY (unchanged)
-  const titleOverlay = document.createElement('div');
-  titleOverlay.className =
-    'absolute inset-0 bg-gradient-to-t from-black/75 to-transparent opacity-0 group-hover-overlay transition-opacity duration-300 pointer-events-none z-10';
-  item.appendChild(titleOverlay);
-
-  const title = document.createElement('h3');
-  title.textContent = render.title;
-  title.className =
-    'absolute bottom-0 left-0 p-4 text-white font-semibold text-lg opacity-0 group-hover-title transition-opacity duration-500 delay-100 pointer-events-none z-10';
-  item.appendChild(title);
-
-  return item;
-};
-
-
-        const renderGrid = (renders) => {
+        const renderGrid = (items) => {
             const grid = document.getElementById('portfolio-grid');
             const loader = document.getElementById('loader');
             grid.innerHTML = '';
@@ -731,23 +689,22 @@ const createGridItem = (render) => {
                 return col;
             });
 
-            const unassignedRenders = [];
-            renders.sort((a, b) => (a.originalName || '').localeCompare(b.originalName || ''))
-                   .forEach(render => {
-                        const match = (render.originalName || '').match(/^(\d+)/);
-                        if (match) {
-                            const colIndex = parseInt(match[1], 10) - 1;
-                            if (colIndex >= 0 && colIndex < 4) {
-                                columns[colIndex].appendChild(createGridItem(render));
-                                return;
-                            }
-                        }
-                        unassignedRenders.push(render);
-                    });
+            const unassignedItems = [];
+            items.forEach(item => {
+                const match = (item.originalName || '').match(/^(\d+)/);
+                if (match) {
+                    const colIndex = parseInt(match[1], 10) - 1;
+                    if (colIndex >= 0 && colIndex < 4) {
+                        columns[colIndex].appendChild(createGridItem(item));
+                        return;
+                    }
+                }
+                unassignedItems.push(item);
+            });
 
-            unassignedRenders.forEach((render, index) => {
+            unassignedItems.forEach((item, index) => {
                 const colIndex = index % numColumns;
-                columns[colIndex].appendChild(createGridItem(render));
+                columns[colIndex].appendChild(createGridItem(item));
             });
             
             columns.forEach(col => grid.appendChild(col));
@@ -768,36 +725,24 @@ const createGridItem = (render) => {
                 fadeInObserver.observe(item);
             });
         };
-        
-        const openModalByOriginalId = (id) => {
-            const index = portfolioRenders.findIndex(render => render.id === id);
-            if (index !== -1) {
-                openModal(index);
-            }
-        };
 
         const openModal = (index) => {
-            if (index < 0 || index >= portfolioRenders.length) return;
+            if (index < 0 || index >= portfolioItems.length) return;
             
-            // Sort portfolio for modal navigation consistent with grid appearance
-            const sortedForModal = [...portfolioRenders].sort((a, b) => (a.originalName || '').localeCompare(b.originalName || ''));
-            const currentRenderInSorted = sortedForModal[index];
-            currentModalIndex = portfolioRenders.findIndex(r => r.id === currentRenderInSorted.id);
-
-            const render = portfolioRenders[currentModalIndex];
+            currentModalIndex = index;
+            const item = portfolioItems[currentModalIndex];
             
             let mediaHTML = '';
-            if (render.videoUrl) {
-                const autoplayAttribute = isTouchDevice ? '' : 'autoplay';
-                mediaHTML = `<video key="${render.id}" src="${render.videoUrl}" class="w-auto h-auto max-w-[80vw] max-h-[70vh] object-contain" controls ${autoplayAttribute} loop playsinline poster="${render.imageUrl || ''}"></video>`;
+            if (item.type === 'video') {
+                mediaHTML = `<video key="${item.id}" src="${item.videoUrl}" poster="${item.posterUrl}" class="w-auto h-auto max-w-[80vw] max-h-[70vh] object-contain rounded-lg shadow-2xl" autoplay muted controls loop playsinline></video>`;
             } else {
-                mediaHTML = `<img key="${render.id}" src="${render.imageUrl}" alt="${render.title}" class="w-auto h-auto max-w-[80vw] max-h-[70vh] object-contain rounded-lg shadow-2xl">`;
+                mediaHTML = `<img key="${item.id}" src="${item.imageUrl}" alt="${item.title}" class="w-auto h-auto max-w-[80vw] max-h-[70vh] object-contain rounded-lg shadow-2xl">`;
             }
 
             let textContainerHTML = '<div class="w-full max-w-[80vw] mt-4 px-2 text-right">';
-            textContainerHTML += `<h3 class="text-white font-light text-base sm:text-lg opacity-90">${render.title}</h3>`;
-            if (render.description) {
-                textContainerHTML += `<p class="mt-1 text-gray-300 text-sm max-w-lg ml-auto balanced-text">${render.description}</p>`;
+            textContainerHTML += `<h3 class="text-white font-light text-base sm:text-lg opacity-90">${item.title}</h3>`;
+            if (item.description) {
+                textContainerHTML += `<p class="mt-1 text-gray-300 text-sm max-w-lg ml-auto balanced-text">${item.description}</p>`;
             }
             textContainerHTML += '</div>';
             
@@ -834,8 +779,8 @@ const createGridItem = (render) => {
             window.removeEventListener('keydown', handleKeyDown);
         };
         
-        const showNext = () => openModal((currentModalIndex + 1) % portfolioRenders.length);
-        const showPrevious = () => openModal((currentModalIndex - 1 + portfolioRenders.length) % portfolioRenders.length);
+        const showNext = () => openModal((currentModalIndex + 1) % portfolioItems.length);
+        const showPrevious = () => openModal((currentModalIndex - 1 + portfolioItems.length) % portfolioItems.length);
 
         // --- Event Handlers & Setup ---
         const handleKeyDown = (e) => {
@@ -924,16 +869,15 @@ const createGridItem = (render) => {
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
-                if (portfolioRenders.length > 0) {
-                    // Avoid re-rendering on resize for mobile to prevent scroll jumps
+                if (portfolioItems.length > 0) {
                     if (window.innerWidth >= 768) {
-                        renderGrid(portfolioRenders);
+                        renderGrid(portfolioItems);
                     }
                 }
             }, 250);
         });
 
-        fetchRenders();
+        fetchAllMedia();
       });
     </script>
 </body>
