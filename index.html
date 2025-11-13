@@ -134,10 +134,8 @@
         transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       }
       @media (min-width: 1024px) { /* lg breakpoint */
-        .nav-link:hover::after {
-          width: 100%;
-        }
-        .nav-link[aria-current="page"]::after {
+        .nav-link[aria-current="page"]::after,
+        .can-hover .nav-link:hover::after {
           width: 100%;
         }
       }
@@ -243,7 +241,7 @@
               </a>
             </li>
              <li>
-              <a href="#" data-section="about-section" class="nav-link relative font-sans text-lg tracking-wide transition-colors duration-200 px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 md:bg-transparent md:text-gray-800 md:hover:text-black md:px-3 md:py-2 md:rounded-none">
+              <a href="#" data-section="about-section" class="nav-link relative font-sans text-lg tracking-wide transition-colors duration-200 px-4 py-2 rounded-lg bg-gray-200 text-gray-700 md:bg-transparent md:text-gray-800 md:hover:text-black md:px-3 md:py-2 md:rounded-none">
                 Info
               </a>
             </li>
@@ -453,11 +451,11 @@
                     navLink.removeAttribute('aria-current');
                     // Mobile style updates: set to inactive
                     navLink.classList.remove('bg-gray-800', 'text-white');
-                    navLink.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                    navLink.classList.add('bg-gray-200', 'text-gray-700');
                 });
                 clickedLink.setAttribute('aria-current', 'page');
                 // Mobile style updates: set to active
-                clickedLink.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                clickedLink.classList.remove('bg-gray-200', 'text-gray-700');
                 clickedLink.classList.add('bg-gray-800', 'text-white');
                 
                 // Tab switching logic for all devices
@@ -765,6 +763,11 @@
             modal.classList.add('animate-fade-in');
             document.body.style.overflow = 'hidden';
             window.addEventListener('keydown', handleKeyDown);
+
+            if (isTouchDevice) {
+                modal.addEventListener('touchstart', handleTouchStart);
+                modal.addEventListener('touchend', handleTouchEnd);
+            }
         };
 
         const closeModal = () => {
@@ -773,12 +776,53 @@
             modalContent.innerHTML = '';
             document.body.style.overflow = '';
             window.removeEventListener('keydown', handleKeyDown);
+
+            if (isTouchDevice) {
+                modal.removeEventListener('touchstart', handleTouchStart);
+                modal.removeEventListener('touchend', handleTouchEnd);
+            }
         };
         
         const showNext = () => openModal((currentModalIndex + 1) % portfolioRenders.length);
         const showPrevious = () => openModal((currentModalIndex - 1 + portfolioRenders.length) % portfolioRenders.length);
 
         // --- Event Handlers & Setup ---
+        let touchstartX = 0;
+        let touchstartY = 0;
+
+        const handleTouchStart = (e) => {
+            // Check if touch is on a button, if so, don't start swipe
+            if (e.target.closest('button')) {
+                touchstartX = 0;
+                touchstartY = 0;
+                return;
+            }
+            touchstartX = e.changedTouches[0].screenX;
+            touchstartY = e.changedTouches[0].screenY;
+        };
+
+        const handleTouchEnd = (e) => {
+            if (touchstartX === 0) return; // Abort if touch started on a button
+
+            const touchendX = e.changedTouches[0].screenX;
+            const touchendY = e.changedTouches[0].screenY;
+            
+            const deltaX = touchendX - touchstartX;
+            const deltaY = touchendY - touchstartY;
+            const swipeThreshold = 50; // Minimum distance for a swipe
+
+            // Check if it's a significant horizontal swipe and not a vertical scroll attempt
+            if (Math.abs(deltaX) > swipeThreshold && Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (deltaX < 0) {
+                    // Swiped left
+                    showNext();
+                } else {
+                    // Swiped right
+                    showPrevious();
+                }
+            }
+        };
+        
         const handleKeyDown = (e) => {
             if (e.key === 'Escape') closeModal();
             if (e.key === 'ArrowRight') showNext();
