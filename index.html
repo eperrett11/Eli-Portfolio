@@ -617,17 +617,62 @@ const createGridItem = (render) => {
   const contentWrapper = document.createElement('div');
   contentWrapper.className = 'item-content-wrapper';
 
+  // ---------- MOBILE / TOUCH: NO VIDEO IN GRID ----------
+  if (isTouchDevice) {
+    if (render.imageUrl) {
+      // Use the image as the tile (poster)
+      const img = document.createElement('img');
+      img.src = render.imageUrl;
+      img.alt = render.title;
+      img.loading = 'lazy';
+      img.className = 'w-full h-full object-cover';
+
+      img.addEventListener(
+        'load',
+        () => {
+          if (!item.style.aspectRatio) {
+            item.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+          }
+        },
+        { once: true }
+      );
+
+      contentWrapper.appendChild(img);
+    } else if (render.videoUrl) {
+      // Fallback if there is a video but no image/poster
+      const placeholder = document.createElement('div');
+      placeholder.className =
+        'w-full h-full flex items-center justify-center bg-gray-300 text-gray-700 text-xs uppercase tracking-wide';
+      placeholder.textContent = render.title || 'Video';
+      contentWrapper.appendChild(placeholder);
+    }
+
+    item.appendChild(contentWrapper);
+
+    // Title overlay (still show title on hover/press if any)
+    const titleOverlay = document.createElement('div');
+    titleOverlay.className =
+      'absolute inset-0 bg-gradient-to-t from-black/75 to-transparent opacity-0 group-hover-overlay transition-opacity duration-300 pointer-events-none z-10';
+    item.appendChild(titleOverlay);
+
+    const title = document.createElement('h3');
+    title.textContent = render.title;
+    title.className =
+      'absolute bottom-0 left-0 p-4 text-white font-semibold text-lg opacity-0 group-hover-title transition-opacity duration-500 delay-100 pointer-events-none z-10';
+    item.appendChild(title);
+
+    return item; // IMPORTANT: stop here on mobile
+  }
+
+  // ---------- DESKTOP / NON-TOUCH: ORIGINAL BEHAVIOUR ----------
   // 1) IMAGE / POSTER
   if (render.imageUrl) {
     const img = document.createElement('img');
     img.src = render.imageUrl;
     img.alt = render.title;
     img.loading = 'lazy';
-
     const imageClasses =
       'w-full h-full object-cover transition-opacity duration-300 ease-in-out';
-
-    // keep group-hover-img so desktop hover behaviour still works
     img.className = render.videoUrl
       ? `${imageClasses} group-hover-img`
       : imageClasses;
@@ -636,20 +681,18 @@ const createGridItem = (render) => {
       'load',
       () => {
         if (!item.style.aspectRatio) {
-          item.style.aspectRatio = `${img.naturalWidth} / img.naturalHeight`;
+          item.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
         }
       },
       { once: true }
     );
-
     contentWrapper.appendChild(img);
   } else if (render.videoUrl) {
-    // video-only item, use video just to set aspect ratio
+    // If no image, use video just to establish aspect ratio
     const videoForSizing = document.createElement('video');
     videoForSizing.src = render.videoUrl;
     videoForSizing.preload = 'metadata';
     videoForSizing.className = 'w-full h-full object-cover';
-
     videoForSizing.addEventListener(
       'loadedmetadata',
       () => {
@@ -659,12 +702,11 @@ const createGridItem = (render) => {
       },
       { once: true }
     );
-
     contentWrapper.appendChild(videoForSizing);
   }
 
-  // 2) DESKTOP HOVER VIDEO ONLY (NOT on touch devices)
-  if (render.videoUrl && !isTouchDevice) {
+  // 2) HOVER VIDEO PREVIEW (DESKTOP ONLY)
+  if (render.videoUrl) {
     const video = document.createElement('video');
     video.src = render.videoUrl;
     video.muted = true;
@@ -697,7 +739,6 @@ const createGridItem = (render) => {
 
   item.appendChild(contentWrapper);
 
-  // 3) TITLE OVERLAY (unchanged)
   const titleOverlay = document.createElement('div');
   titleOverlay.className =
     'absolute inset-0 bg-gradient-to-t from-black/75 to-transparent opacity-0 group-hover-overlay transition-opacity duration-300 pointer-events-none z-10';
