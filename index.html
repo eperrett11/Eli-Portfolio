@@ -11,12 +11,8 @@
     <link rel="canonical" href="https://eliperrett.com/" /> <!-- Replace with your actual domain -->
 
     <!-- Favicons -->
-    <!-- Generate favicons from your logo at https://realfavicongenerator.net/ and place them in the root folder -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <meta name="theme-color" content="#ffffff">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/eperrett11/Media/main/media/eli-bike-logo.png" />
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/eperrett11/Media/main/media/eli-bike-logo.png" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -387,7 +383,7 @@
 
     </div>
 
-    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center z-50 p-4">
+    <div id="modal" class="hidden fixed inset-0 bg-black lg:bg-opacity-90 flex flex-col items-center justify-center z-50 p-4">
         <div id="modal-content" class="flex flex-col items-center">
             <!-- Image or Video will be inserted here -->
         </div>
@@ -621,7 +617,7 @@ const createGridItem = (render) => {
   const contentWrapper = document.createElement('div');
   contentWrapper.className = 'item-content-wrapper';
 
-  // 1) IMAGE / POSTER (always used for the tile)
+  // 1) IMAGE / POSTER
   if (render.imageUrl) {
     const img = document.createElement('img');
     img.src = render.imageUrl;
@@ -630,14 +626,17 @@ const createGridItem = (render) => {
 
     const imageClasses =
       'w-full h-full object-cover transition-opacity duration-300 ease-in-out';
-    // Keep group-hover-img so desktop hover logic still works
-    img.className = render.videoUrl ? `${imageClasses} group-hover-img` : imageClasses;
+
+    // keep group-hover-img so desktop hover behaviour still works
+    img.className = render.videoUrl
+      ? `${imageClasses} group-hover-img`
+      : imageClasses;
 
     img.addEventListener(
       'load',
       () => {
         if (!item.style.aspectRatio) {
-          item.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+          item.style.aspectRatio = `${img.naturalWidth} / img.naturalHeight`;
         }
       },
       { once: true }
@@ -645,7 +644,7 @@ const createGridItem = (render) => {
 
     contentWrapper.appendChild(img);
   } else if (render.videoUrl) {
-    // If somehow we have only a video and no image, use it just for sizing
+    // video-only item, use video just to set aspect ratio
     const videoForSizing = document.createElement('video');
     videoForSizing.src = render.videoUrl;
     videoForSizing.preload = 'metadata';
@@ -664,7 +663,7 @@ const createGridItem = (render) => {
     contentWrapper.appendChild(videoForSizing);
   }
 
-  // 2) HOVER VIDEO PREVIEW - DESKTOP ONLY
+  // 2) DESKTOP HOVER VIDEO ONLY (NOT on touch devices)
   if (render.videoUrl && !isTouchDevice) {
     const video = document.createElement('video');
     video.src = render.videoUrl;
@@ -816,11 +815,6 @@ const createGridItem = (render) => {
             }
 
             window.addEventListener('keydown', handleKeyDown);
-
-            if (isTouchDevice) {
-                modal.addEventListener('touchstart', handleTouchStart);
-                modal.addEventListener('touchend', handleTouchEnd);
-            }
         };
 
         const closeModal = () => {
@@ -838,53 +832,12 @@ const createGridItem = (render) => {
             }
 
             window.removeEventListener('keydown', handleKeyDown);
-
-            if (isTouchDevice) {
-                modal.removeEventListener('touchstart', handleTouchStart);
-                modal.removeEventListener('touchend', handleTouchEnd);
-            }
         };
         
         const showNext = () => openModal((currentModalIndex + 1) % portfolioRenders.length);
         const showPrevious = () => openModal((currentModalIndex - 1 + portfolioRenders.length) % portfolioRenders.length);
 
         // --- Event Handlers & Setup ---
-        let touchstartX = 0;
-        let touchstartY = 0;
-
-        const handleTouchStart = (e) => {
-            // Check if touch is on a button, if so, don't start swipe
-            if (e.target.closest('button')) {
-                touchstartX = 0;
-                touchstartY = 0;
-                return;
-            }
-            touchstartX = e.changedTouches[0].screenX;
-            touchstartY = e.changedTouches[0].screenY;
-        };
-
-        const handleTouchEnd = (e) => {
-            if (touchstartX === 0) return; // Abort if touch started on a button
-
-            const touchendX = e.changedTouches[0].screenX;
-            const touchendY = e.changedTouches[0].screenY;
-            
-            const deltaX = touchendX - touchstartX;
-            const deltaY = touchendY - touchstartY;
-            const swipeThreshold = 50; // Minimum distance for a swipe
-
-            // Check if it's a significant horizontal swipe and not a vertical scroll attempt
-            if (Math.abs(deltaX) > swipeThreshold && Math.abs(deltaX) > Math.abs(deltaY)) {
-                if (deltaX < 0) {
-                    // Swiped left
-                    showNext();
-                } else {
-                    // Swiped right
-                    showPrevious();
-                }
-            }
-        };
-        
         const handleKeyDown = (e) => {
             if (e.key === 'Escape') closeModal();
             if (e.key === 'ArrowRight') showNext();
