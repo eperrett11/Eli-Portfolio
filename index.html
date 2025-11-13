@@ -617,44 +617,45 @@
                 contentWrapper.appendChild(videoForSizing);
             }
         
-            if (render.videoUrl) {
-                const video = document.createElement('video');
-                video.src = render.videoUrl;
-                video.muted = true;
-                video.loop = true;
-                video.playsInline = true;
-                video.preload = "auto";
+if (render.videoUrl) {
+  const video = document.createElement('video');
+  video.src = render.videoUrl;
+  video.muted = true;
+  video.loop = true;
+  video.playsInline = true;
+  video.preload = "auto";
 
-                // === CHANGE: show video immediately on touch devices; keep hover-reveal on desktop ===
-                if (isTouchDevice) {
-                    // Mobile/touch: make video visible without waiting for `playing`
-                    video.className = 'absolute inset-0 w-full h-full object-cover';
-                } else {
-                    // Desktop/hover devices: start hidden, reveal once it plays (on hover)
-                    video.className = 'absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300 ease-in-out group-hover-video';
+  if (isTouchDevice) {
+    // MOBILE: do NOT add the video into the grid at all.
+    // Just use the image as the poster tile.
+    // So simply return here and skip appending `video`.
+    return item; // or just skip everything after this inside the if-block
+  } else {
+    // DESKTOP: keep your existing hover behaviour
+    video.className = 'absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300 ease-in-out group-hover-video';
 
-                    const onFirstPlay = () => {
-                        video.classList.remove('opacity-0', 'group-hover-video');
-                        const posterImg = contentWrapper.querySelector('img');
-                        if (posterImg) {
-                            posterImg.classList.remove('group-hover-img');
-                            posterImg.classList.add('opacity-0');
-                        }
-                        video.removeEventListener('playing', onFirstPlay);
-                    };
-                    video.addEventListener('playing', onFirstPlay);
+    const onFirstPlay = () => {
+      video.classList.remove('opacity-0', 'group-hover-video');
+      const posterImg = contentWrapper.querySelector('img');
+      if (posterImg) {
+        posterImg.classList.remove('group-hover-img');
+        posterImg.classList.add('opacity-0');
+      }
+      video.removeEventListener('playing', onFirstPlay);
+    };
+    video.addEventListener('playing', onFirstPlay);
 
-                    item.addEventListener('mouseenter', () => {
-                        video.play().catch(e => {});
-                    });
-                    item.addEventListener('mouseleave', () => {
-                        video.pause();
-                    });
-                }
-                // === END CHANGE ===
+    item.addEventListener('mouseenter', () => {
+      video.play().catch(() => {});
+    });
+    item.addEventListener('mouseleave', () => {
+      video.pause();
+    });
 
-                contentWrapper.appendChild(video);
-            }
+    contentWrapper.appendChild(video);
+  }
+}
+
         
             item.appendChild(contentWrapper);
         
