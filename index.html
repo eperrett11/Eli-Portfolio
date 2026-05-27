@@ -520,6 +520,17 @@
             '3C-Adventurer_Camper_Exterior.mp4': { column: 2, row: 14 },
             '4A-Adventurer_Camper_Exterior.mp4': { column: 1, row: 5 },
         };
+        const CUSTOM_ASPECT_RATIOS = {
+            '1A-Adventurer_Camper_Exterior.jpg': '1 / 1',
+            '2C-Adventurer_Camper_Exterior.jpg': '1 / 1',
+            '3B-Adventurer_Camper_Exterior.jpg': '1 / 1',
+            '4C-Adventurer_Camper_Interior.jpg': '1 / 1',
+            '1C-Adventurer_Camper_Interior.mp4': '1 / 1',
+            '2A-Adventurer_Camper_Exterior.mp4': '1 / 1',
+            '2D-Adventurer_Camper_Interior.mp4': '1 / 1',
+            '3C-Adventurer_Camper_Exterior.mp4': '1 / 1',
+            '4A-Adventurer_Camper_Exterior.mp4': '1 / 1',
+        };
 
         const grid = document.getElementById('portfolio-grid');
         const modal = document.getElementById('modal');
@@ -629,6 +640,9 @@
             const baseItemClasses = 'masonry-item relative overflow-hidden rounded-lg cursor-pointer shadow-lg w-full [break-inside:avoid]';
             item.className = `${baseItemClasses} group`;
             item.onclick = () => openModal(itemData.id);
+            if (CUSTOM_ASPECT_RATIOS[itemData.originalName]) {
+                item.style.aspectRatio = CUSTOM_ASPECT_RATIOS[itemData.originalName];
+            }
 
             const contentWrapper = document.createElement('div');
             contentWrapper.className = 'item-content-wrapper';
