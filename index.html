@@ -642,8 +642,7 @@
             item.className = `${baseItemClasses} group`;
             item.onclick = () => openModal(itemData.id);
             if (isCamperMedia(itemData)) {
-                item.classList.add('aspect-square');
-                item.style.setProperty('aspect-ratio', '1 / 1', 'important');
+                item.style.setProperty('aspect-ratio', '9 / 16', 'important');
             }
 
             const isCamper = isCamperMedia(itemData);
@@ -686,7 +685,7 @@
 
                 video.addEventListener('loadedmetadata', () => {
                     if (isCamper) {
-                        item.style.setProperty('aspect-ratio', '1 / 1', 'important');
+                        item.style.setProperty('aspect-ratio', '9 / 16', 'important');
                     } else {
                         item.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
                     }
