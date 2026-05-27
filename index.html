@@ -510,27 +510,28 @@
         const GITHUB_MEDIA_API_URL = 'https://api.github.com/repos/eperrett11/Media/contents/media';
         const GITHUB_VIDEOS_API_URL = 'https://api.github.com/repos/eperrett11/Media/contents/videos';
         const CUSTOM_GRID_PLACEMENTS = {
-            '1A-Adventurer_Camper_Exterior.jpg': { column: 4, row: 3 },
-            '2C-Adventurer_Camper_Exterior.jpg': { column: 2, row: 8 },
-            '3B-Adventurer_Camper_Exterior.jpg': { column: 3, row: 13 },
-            '4C-Adventurer_Camper_Interior.jpg': { column: 1, row: 10 },
-            '1C-Adventurer_Camper_Interior.mp4': { column: 3, row: 6 },
-            '2A-Adventurer_Camper_Exterior.mp4': { column: 1, row: 15 },
-            '2D-Adventurer_Camper_Interior.mp4': { column: 4, row: 11 },
-            '3C-Adventurer_Camper_Exterior.mp4': { column: 2, row: 14 },
-            '4A-Adventurer_Camper_Exterior.mp4': { column: 1, row: 5 },
+            '1A-Adventurer_Camper_Exterior.jpg': { column: 4, row: 9 },
+            '2C-Adventurer_Camper_Exterior.jpg': { column: 2, row: 13 },
+            '3B-Adventurer_Camper_Exterior.jpg': { column: 3, row: 17 },
+            '4C-Adventurer_Camper_Interior.jpg': { column: 1, row: 12 },
+            '1C-Adventurer_Camper_Interior.mp4': { column: 3, row: 8 },
+            '2A-Adventurer_Camper_Exterior.mp4': { column: 1, row: 18 },
+            '2D-Adventurer_Camper_Interior.mp4': { column: 4, row: 15 },
+            '3C-Adventurer_Camper_Exterior.mp4': { column: 2, row: 19 },
+            '4A-Adventurer_Camper_Exterior.mp4': { column: 1, row: 7 },
         };
-        const CUSTOM_ASPECT_RATIOS = {
-            '1A-Adventurer_Camper_Exterior.jpg': '1 / 1',
-            '2C-Adventurer_Camper_Exterior.jpg': '1 / 1',
-            '3B-Adventurer_Camper_Exterior.jpg': '1 / 1',
-            '4C-Adventurer_Camper_Interior.jpg': '1 / 1',
-            '1C-Adventurer_Camper_Interior.mp4': '1 / 1',
-            '2A-Adventurer_Camper_Exterior.mp4': '1 / 1',
-            '2D-Adventurer_Camper_Interior.mp4': '1 / 1',
-            '3C-Adventurer_Camper_Exterior.mp4': '1 / 1',
-            '4A-Adventurer_Camper_Exterior.mp4': '1 / 1',
-        };
+        const CAMPER_GRID_PLACEMENTS = [
+            { column: 4, row: 9 },
+            { column: 2, row: 13 },
+            { column: 3, row: 17 },
+            { column: 1, row: 12 },
+            { column: 3, row: 8 },
+            { column: 1, row: 18 },
+            { column: 4, row: 15 },
+            { column: 2, row: 19 },
+            { column: 1, row: 7 },
+        ];
+        const isCamperMedia = (item) => /(?:adventurer|scout)[\s_-]*camper/i.test(`${item.originalName || ''} ${item.title || ''}`);
 
         const grid = document.getElementById('portfolio-grid');
         const modal = document.getElementById('modal');
@@ -640,8 +641,9 @@
             const baseItemClasses = 'masonry-item relative overflow-hidden rounded-lg cursor-pointer shadow-lg w-full [break-inside:avoid]';
             item.className = `${baseItemClasses} group`;
             item.onclick = () => openModal(itemData.id);
-            if (CUSTOM_ASPECT_RATIOS[itemData.originalName]) {
-                item.style.aspectRatio = CUSTOM_ASPECT_RATIOS[itemData.originalName];
+            if (isCamperMedia(itemData)) {
+                item.classList.add('aspect-square');
+                item.style.setProperty('aspect-ratio', '1 / 1', 'important');
             }
 
             const contentWrapper = document.createElement('div');
@@ -729,7 +731,7 @@
             const placedItems = [];
             const unassignedItems = [];
             items.forEach(item => {
-                if (CUSTOM_GRID_PLACEMENTS[item.originalName]) {
+                if (CUSTOM_GRID_PLACEMENTS[item.originalName] || isCamperMedia(item)) {
                     placedItems.push(item);
                     return;
                 }
@@ -750,8 +752,8 @@
                 columns[colIndex].appendChild(createGridItem(item));
             });
 
-            placedItems.forEach(item => {
-                const placement = CUSTOM_GRID_PLACEMENTS[item.originalName];
+            placedItems.forEach((item, index) => {
+                const placement = CUSTOM_GRID_PLACEMENTS[item.originalName] || CAMPER_GRID_PLACEMENTS[index % CAMPER_GRID_PLACEMENTS.length];
                 const colIndex = Math.min(placement.column, numColumns) - 1;
                 const gridItem = createGridItem(item);
                 const targetColumn = columns[colIndex];
