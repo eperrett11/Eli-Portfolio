@@ -514,11 +514,11 @@
             '2C-Adventurer_Camper_Exterior.jpg': { column: 2, row: 13 },
             '3B-Adventurer_Camper_Exterior.jpg': { column: 3, row: 17 },
             '4C-Adventurer_Camper_Interior.jpg': { column: 1, row: 12 },
-            '1C-Adventurer_Camper_Interior.mp4': { column: 3, row: 8 },
-            '2A-Adventurer_Camper_Exterior.mp4': { column: 1, row: 18 },
-            '2D-Adventurer_Camper_Interior.mp4': { column: 4, row: 15 },
-            '3C-Adventurer_Camper_Exterior.mp4': { column: 2, row: 19 },
-            '4A-Adventurer_Camper_Exterior.mp4': { column: 1, row: 7 },
+            '1C-Adventurer_Camper_Interior_Portrait.mp4': { column: 3, row: 8 },
+            '2A-Adventurer_Camper_Exterior_Portrait.mp4': { column: 1, row: 18 },
+            '2D-Adventurer_Camper_Interior_Portrait.mp4': { column: 4, row: 15 },
+            '3C-Adventurer_Camper_Exterior_Portrait.mp4': { column: 2, row: 19 },
+            '4A-Adventurer_Camper_Exterior_Portrait.mp4': { column: 1, row: 7 },
         };
         const CAMPER_GRID_PLACEMENTS = [
             { column: 4, row: 9 },
@@ -532,7 +532,6 @@
             { column: 1, row: 7 },
         ];
         const isCamperMedia = (item) => /(?:adventurer|scout)[\s_-]*camper/i.test(`${item.originalName || ''} ${item.title || ''}`);
-        const versionedUrl = (file) => file.download_url ? `${file.download_url}?v=${file.sha || file.name}` : '';
 
         const grid = document.getElementById('portfolio-grid');
         const modal = document.getElementById('modal');
@@ -578,7 +577,7 @@
 
                     return {
                         type: 'image',
-                        imageUrl: versionedUrl(file),
+                        imageUrl: file.download_url,
                         title: title,
                         originalName: file.name,
                         description: PORTFOLIO_DESCRIPTIONS[key] || ''
@@ -591,7 +590,7 @@
                     .filter(file => imageExtensions.includes(file.name.substring(file.name.lastIndexOf('.')).toLowerCase()))
                     .forEach(file => {
                         const key = file.name.split(' - ')[0];
-                        posterMap.set(key, versionedUrl(file));
+                        posterMap.set(key, file.download_url);
                     });
                 
                 const videoFiles = allVideoRepoFiles.filter(file => file.name.toLowerCase().endsWith('.mp4'));
@@ -604,7 +603,7 @@
 
                     return {
                         type: 'video',
-                        videoUrl: versionedUrl(file),
+                        videoUrl: file.download_url,
                         posterUrl: posterMap.get(rawBaseName) || '',
                         title: title,
                         originalName: file.name,
