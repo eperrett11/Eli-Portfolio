@@ -647,17 +647,34 @@
 
             const isCamper = isCamperMedia(itemData);
             const contentWrapper = document.createElement('div');
-            contentWrapper.className = 'item-content-wrapper';
+            contentWrapper.className = isCamper && itemData.type === 'video'
+                ? 'item-content-wrapper relative bg-gray-200'
+                : 'item-content-wrapper';
 
             if (itemData.type === 'video') {
                 const video = document.createElement('video');
                 video.src = itemData.videoUrl;
-                video.poster = itemData.posterUrl;
+                video.poster = isCamper ? '' : itemData.posterUrl;
                 video.muted = true;
                 video.loop = true;
                 video.playsInline = true;
-                video.className = 'w-full h-full object-cover';
+                video.className = isCamper
+                    ? 'absolute inset-0 w-full h-full object-cover'
+                    : 'w-full h-full object-cover';
                 video.preload = 'metadata';
+
+                let posterImg = null;
+                if (isCamper && itemData.posterUrl) {
+                    posterImg = document.createElement('img');
+                    posterImg.src = itemData.posterUrl;
+                    posterImg.alt = itemData.title;
+                    posterImg.loading = 'lazy';
+                    posterImg.className = 'absolute inset-0 z-[1] w-full h-full object-cover transition-opacity duration-150';
+                    contentWrapper.appendChild(posterImg);
+                    video.addEventListener('playing', () => {
+                        posterImg.classList.add('opacity-0');
+                    });
+                }
 
                 if (itemData.posterUrl) {
                     const posterProbe = new Image();
@@ -682,6 +699,9 @@
                     item.addEventListener('mouseleave', () => {
                         video.pause();
                         video.currentTime = 0;
+                        if (posterImg) {
+                            posterImg.classList.remove('opacity-0');
+                        }
                     });
                 }
                 contentWrapper.appendChild(video);
