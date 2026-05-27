@@ -509,6 +509,17 @@
 
         const GITHUB_MEDIA_API_URL = 'https://api.github.com/repos/eperrett11/Media/contents/media';
         const GITHUB_VIDEOS_API_URL = 'https://api.github.com/repos/eperrett11/Media/contents/videos';
+        const CUSTOM_GRID_PLACEMENTS = {
+            '1A-Adventurer_Camper_Exterior.jpg': { column: 4, row: 3 },
+            '2C-Adventurer_Camper_Exterior.jpg': { column: 2, row: 8 },
+            '3B-Adventurer_Camper_Exterior.jpg': { column: 3, row: 13 },
+            '4C-Adventurer_Camper_Interior.jpg': { column: 1, row: 10 },
+            '1C-Adventurer_Camper_Interior.mp4': { column: 3, row: 6 },
+            '2A-Adventurer_Camper_Exterior.mp4': { column: 1, row: 15 },
+            '2D-Adventurer_Camper_Interior.mp4': { column: 4, row: 11 },
+            '3C-Adventurer_Camper_Exterior.mp4': { column: 2, row: 14 },
+            '4A-Adventurer_Camper_Exterior.mp4': { column: 1, row: 5 },
+        };
 
         const grid = document.getElementById('portfolio-grid');
         const modal = document.getElementById('modal');
@@ -632,10 +643,18 @@
                 video.className = 'w-full h-full object-cover';
                 video.preload = 'metadata';
 
+                if (itemData.posterUrl) {
+                    const posterProbe = new Image();
+                    posterProbe.onload = () => {
+                        if (!item.style.aspectRatio) {
+                            item.style.aspectRatio = `${posterProbe.naturalWidth} / ${posterProbe.naturalHeight}`;
+                        }
+                    };
+                    posterProbe.src = itemData.posterUrl;
+                }
+
                 video.addEventListener('loadedmetadata', () => {
-                    if (!item.style.aspectRatio) {
-                        item.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
-                    }
+                    item.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
                 }, { once: true });
                 
                 if (!isTouchDevice) {
@@ -693,8 +712,14 @@
                 return col;
             });
 
+            const placedItems = [];
             const unassignedItems = [];
             items.forEach(item => {
+                if (CUSTOM_GRID_PLACEMENTS[item.originalName]) {
+                    placedItems.push(item);
+                    return;
+                }
+
                 const match = (item.originalName || '').match(/^(\d+)/);
                 if (match) {
                     const colIndex = parseInt(match[1], 10) - 1;
@@ -709,6 +734,15 @@
             unassignedItems.forEach((item, index) => {
                 const colIndex = index % numColumns;
                 columns[colIndex].appendChild(createGridItem(item));
+            });
+
+            placedItems.forEach(item => {
+                const placement = CUSTOM_GRID_PLACEMENTS[item.originalName];
+                const colIndex = Math.min(placement.column, numColumns) - 1;
+                const gridItem = createGridItem(item);
+                const targetColumn = columns[colIndex];
+                const beforeItem = targetColumn.children[placement.row - 1] || null;
+                targetColumn.insertBefore(gridItem, beforeItem);
             });
             
             columns.forEach(col => grid.appendChild(col));
