@@ -597,7 +597,7 @@
 
                 const videos = videoFiles.map(file => {
                     const rawBaseName = file.name.substring(0, file.name.lastIndexOf('.'));
-                    const titleName = rawBaseName.replace(/^\d+[a-zA-Z]?-/i, '');
+                    const titleName = rawBaseName.replace(/^\d+[a-zA-Z]?-/i, '').replace(/_Portrait$/i, '');
                     const title = titleName.replace(/[-_]/g, ' ').trim().replace(/\b\w/g, l => l.toUpperCase());
                     const key = rawBaseName.replace(/[\s_-]/g, '-').toLowerCase();
 
@@ -647,31 +647,17 @@
 
             const isCamper = isCamperMedia(itemData);
             const contentWrapper = document.createElement('div');
-            contentWrapper.className = isCamper && itemData.type === 'video'
-                ? 'item-content-wrapper relative bg-gray-200'
-                : 'item-content-wrapper';
+            contentWrapper.className = 'item-content-wrapper';
 
             if (itemData.type === 'video') {
                 const video = document.createElement('video');
                 video.src = itemData.videoUrl;
-                video.poster = isCamper ? '' : itemData.posterUrl;
+                video.poster = itemData.posterUrl;
                 video.muted = true;
                 video.loop = true;
                 video.playsInline = true;
-                video.className = isCamper
-                    ? 'absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-200'
-                    : 'w-full h-full object-cover';
+                video.className = 'w-full h-full object-cover';
                 video.preload = 'metadata';
-
-                let posterImg = null;
-                if (isCamper && itemData.posterUrl) {
-                    posterImg = document.createElement('img');
-                    posterImg.src = itemData.posterUrl;
-                    posterImg.alt = itemData.title;
-                    posterImg.loading = 'lazy';
-                    posterImg.className = 'absolute inset-0 w-full h-full object-contain transition-opacity duration-200';
-                    contentWrapper.appendChild(posterImg);
-                }
 
                 if (itemData.posterUrl) {
                     const posterProbe = new Image();
@@ -692,22 +678,10 @@
                 }, { once: true });
                 
                 if (!isTouchDevice) {
-                    item.addEventListener('mouseenter', () => {
-                        if (isCamper && posterImg) {
-                            posterImg.classList.add('opacity-0');
-                            video.classList.remove('opacity-0');
-                            video.classList.add('opacity-100');
-                        }
-                        video.play().catch(e => console.log("Autoplay prevented on hover."));
-                    });
+                    item.addEventListener('mouseenter', () => video.play().catch(e => console.log("Autoplay prevented on hover.")));
                     item.addEventListener('mouseleave', () => {
                         video.pause();
                         video.currentTime = 0;
-                        if (isCamper && posterImg) {
-                            posterImg.classList.remove('opacity-0');
-                            video.classList.add('opacity-0');
-                            video.classList.remove('opacity-100');
-                        }
                     });
                 }
                 contentWrapper.appendChild(video);
