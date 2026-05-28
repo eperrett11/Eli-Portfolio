@@ -123,7 +123,7 @@
       .can-hover .masonry-item.is-visible:hover {
         z-index: 10;
       }
-      .can-hover .masonry-item:hover .item-content-wrapper {
+      .can-hover .masonry-item:not(.video-item):hover .item-content-wrapper {
         transform: scale(1.03);
       }
       .can-hover .group:hover .group-hover-overlay { opacity: 1; }
@@ -642,6 +642,9 @@
             const item = document.createElement('div');
             const baseItemClasses = 'masonry-item relative overflow-hidden rounded-lg cursor-pointer shadow-lg w-full [break-inside:avoid]';
             item.className = `${baseItemClasses} group`;
+            if (itemData.type === 'video') {
+                item.classList.add('video-item');
+            }
             item.onclick = () => openModal(itemData.id);
             if (isCamperMedia(itemData)) {
                 item.style.setProperty('aspect-ratio', '9 / 16', 'important');
