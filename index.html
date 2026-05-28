@@ -815,10 +815,10 @@
                 mediaHTML = `<img key="${item.id}" src="${item.imageUrl}" alt="${item.title}" class="w-auto h-auto max-w-[80vw] max-h-[70vh] object-contain rounded-lg shadow-2xl">`;
             }
 
-            let textContainerHTML = '<div class="w-full max-w-[80vw] mt-4 px-2 text-right">';
+            let textContainerHTML = '<div class="w-full max-w-[80vw] mt-4 px-2 text-center">';
             textContainerHTML += `<h3 class="text-white font-light text-base sm:text-lg opacity-90">${item.title}</h3>`;
             if (item.description) {
-                textContainerHTML += `<p class="mt-1 text-gray-300 text-sm max-w-lg ml-auto balanced-text">${item.description}</p>`;
+                textContainerHTML += `<p class="mt-1 text-gray-300 text-sm max-w-lg mx-auto balanced-text">${item.description}</p>`;
             }
             textContainerHTML += '</div>';
             
