@@ -17,7 +17,7 @@
     { "file": "videos/Mista Mango.mp4", "column": 1, "order": 110 },
     { "file": "videos/Winter Window.mp4", "column": 1, "order": 115 },
     { "file": "media/4C-Adventurer_Camper_Interior.jpg", "column": 1, "order": 55 },
-    { "file": "videos/2A-Adventurer_Camper_Exterior_Portrait.mp4", "column": 1, "order": 95 },
+    { "file": "videos/2A-Adventurer_Camper_Exterior_Portrait.mp4", "column": 1, "order": 95, "hidden": true },
 
     { "file": "media/2A-Okhissa_Lake.jpg", "column": 2, "order": 10 },
     { "file": "media/2B-Heli Ski Lodge.jpg", "column": 2, "order": 20 },
