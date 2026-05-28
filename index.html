@@ -519,29 +519,37 @@
 
         const GITHUB_MEDIA_API_URL = 'https://api.github.com/repos/eperrett11/Media/contents/media';
         const GITHUB_VIDEOS_API_URL = 'https://api.github.com/repos/eperrett11/Media/contents/videos';
-        const CUSTOM_GRID_PLACEMENTS = {
-            '1A-Adventurer_Camper_Exterior.jpg': { column: 4, row: 9 },
-            '2C-Adventurer_Camper_Exterior.jpg': { column: 2, row: 13 },
-            '3B-Adventurer_Camper_Exterior.jpg': { column: 3, row: 17 },
-            '4C-Adventurer_Camper_Interior.jpg': { column: 1, row: 12 },
-            '1C-Adventurer_Camper_Interior_Portrait.mp4': { column: 3, row: 8 },
-            '2A-Adventurer_Camper_Exterior_Portrait.mp4': { column: 1, row: 18 },
-            '2D-Adventurer_Camper_Interior_Portrait.mp4': { column: 4, row: 15 },
-            '3C-Adventurer_Camper_Exterior_Portrait.mp4': { column: 2, row: 19 },
-            '4A-Adventurer_Camper_Exterior_Portrait.mp4': { column: 1, row: 7 },
-        };
-        const CAMPER_GRID_PLACEMENTS = [
-            { column: 4, row: 9 },
-            { column: 2, row: 13 },
-            { column: 3, row: 17 },
-            { column: 1, row: 12 },
-            { column: 3, row: 8 },
-            { column: 1, row: 18 },
-            { column: 4, row: 15 },
-            { column: 2, row: 19 },
-            { column: 1, row: 7 },
-        ];
+        const PORTFOLIO_ORDER_URL = 'portfolio-order.json';
         const isCamperMedia = (item) => /(?:adventurer|scout)[\s_-]*camper/i.test(`${item.originalName || ''} ${item.title || ''}`);
+        const normalizePortfolioPath = (path) => (path || '').replace(/^\/+/, '').replace(/\\/g, '/');
+        let portfolioOrderMap = new Map();
+
+        const fetchPortfolioOrder = async () => {
+            try {
+                const response = await fetch(`${PORTFOLIO_ORDER_URL}?v=${Date.now()}`, { cache: 'no-store' });
+                if (!response.ok) return new Map();
+                const manifest = await response.json();
+                return new Map((manifest.items || []).map(entry => [normalizePortfolioPath(entry.file), entry]));
+            } catch (error) {
+                console.warn('Could not load portfolio order manifest:', error);
+                return new Map();
+            }
+        };
+
+        const applyPortfolioOrder = (item, mediaPath) => {
+            item.mediaPath = normalizePortfolioPath(mediaPath);
+            const orderEntry = portfolioOrderMap.get(item.mediaPath);
+            if (!orderEntry) return item;
+
+            item.gridColumn = Number(orderEntry.column);
+            item.gridOrder = Number(orderEntry.order);
+            item.hidden = orderEntry.hidden === true;
+            if (orderEntry.title) item.title = orderEntry.title;
+            if (Object.prototype.hasOwnProperty.call(orderEntry, 'description')) {
+                item.description = orderEntry.description;
+            }
+            return item;
+        };
 
         const grid = document.getElementById('portfolio-grid');
         const modal = document.getElementById('modal');
@@ -555,10 +563,12 @@
             if (mediaFetched) return;
             mediaFetched = true;
             try {
-                const [mediaResponse, videosResponse] = await Promise.all([
+                const [mediaResponse, videosResponse, orderMap] = await Promise.all([
                     fetch(GITHUB_MEDIA_API_URL),
-                    fetch(GITHUB_VIDEOS_API_URL)
+                    fetch(GITHUB_VIDEOS_API_URL),
+                    fetchPortfolioOrder()
                 ]);
+                portfolioOrderMap = orderMap;
 
                 if (!mediaResponse.ok || !videosResponse.ok) {
                     throw new Error(`Failed to fetch media from GitHub. Status: ${mediaResponse.status}, ${videosResponse.status}`);
@@ -585,13 +595,13 @@
                     const title = titleName.replace(/[-_]/g, ' ').trim().replace(/\b\w/g, l => l.toUpperCase());
                     const key = rawBaseName.replace(/[\s_-]/g, '-').toLowerCase();
 
-                    return {
+                    return applyPortfolioOrder({
                         type: 'image',
                         imageUrl: file.download_url,
                         title: title,
                         originalName: file.name,
                         description: PORTFOLIO_DESCRIPTIONS[key] || ''
-                    };
+                    }, `media/${file.name}`);
                 });
 
                 // --- Process Videos ---
@@ -613,14 +623,14 @@
                     const title = titleName.replace(/[-_]/g, ' ').trim().replace(/\b\w/g, l => l.toUpperCase());
                     const key = rawBaseName.replace(/[\s_-]/g, '-').toLowerCase();
 
-                    return {
+                    return applyPortfolioOrder({
                         type: 'video',
                         videoUrl: file.download_url,
                         posterUrl: posterMap.get(rawBaseName) || '',
                         title: title,
                         originalName: file.name,
                         description: PORTFOLIO_DESCRIPTIONS[key] || ''
-                    };
+                    }, `videos/${file.name}`);
                 });
 
                 portfolioItems = [...images, ...videos]
@@ -750,14 +760,37 @@
                 return col;
             });
 
-            const placedItems = [];
+            const orderedItems = [];
+            const fallbackColumnItems = [];
             const unassignedItems = [];
-            items.forEach(item => {
-                if (CUSTOM_GRID_PLACEMENTS[item.originalName] || isCamperMedia(item)) {
-                    placedItems.push(item);
+            items.filter(item => !item.hidden).forEach(item => {
+                if (Number.isFinite(item.gridColumn) && Number.isFinite(item.gridOrder)) {
+                    orderedItems.push(item);
                     return;
                 }
+                const match = (item.originalName || '').match(/^(\d+)/);
+                if (match) {
+                    const colIndex = parseInt(match[1], 10) - 1;
+                    if (colIndex >= 0 && colIndex < 4) {
+                        fallbackColumnItems.push({ item, colIndex });
+                        return;
+                    }
+                }
+                unassignedItems.push(item);
+            });
 
+            orderedItems
+                .sort((a, b) => a.gridOrder - b.gridOrder || (a.mediaPath || '').localeCompare(b.mediaPath || ''))
+                .forEach(item => {
+                    const colIndex = Math.max(0, Math.min(3, item.gridColumn - 1));
+                    columns[colIndex].appendChild(createGridItem(item));
+                });
+
+            fallbackColumnItems.forEach(({ item, colIndex }) => {
+                columns[colIndex].appendChild(createGridItem(item));
+            });
+
+            unassignedItems.forEach((item, index) => {
                 const match = (item.originalName || '').match(/^(\d+)/);
                 if (match) {
                     const colIndex = parseInt(match[1], 10) - 1;
@@ -766,21 +799,8 @@
                         return;
                     }
                 }
-                unassignedItems.push(item);
-            });
-
-            unassignedItems.forEach((item, index) => {
                 const colIndex = index % numColumns;
                 columns[colIndex].appendChild(createGridItem(item));
-            });
-
-            placedItems.forEach((item, index) => {
-                const placement = CUSTOM_GRID_PLACEMENTS[item.originalName] || CAMPER_GRID_PLACEMENTS[index % CAMPER_GRID_PLACEMENTS.length];
-                const colIndex = Math.min(placement.column, numColumns) - 1;
-                const gridItem = createGridItem(item);
-                const targetColumn = columns[colIndex];
-                const beforeItem = targetColumn.children[placement.row - 1] || null;
-                targetColumn.insertBefore(gridItem, beforeItem);
             });
             
             columns.forEach(col => grid.appendChild(col));
