@@ -4,7 +4,7 @@
   "items": [
     { "file": "media/1A-Salmon_Corn_Hole.jpg", "column": 1, "order": 10 },
     { "file": "media/1B-Industrial Road.jpg", "column": 1, "order": 20 },
-    { "file": "media/1C-Timber_Ridge.jpg", "column": 1, "order": 30 },
+    { "file": "media/1C-Timber_Ridge.jpg", "column": 1, "order": 15 },
     { "file": "media/1D-Kayak Locker.jpg", "column": 1, "order": 40 },
     { "file": "media/Beach_Hut.jpg", "column": 1, "order": 50 },
     { "file": "media/Centennial_Yards_Hotel.jpg", "column": 1, "order": 60 },
@@ -41,7 +41,7 @@
     { "file": "videos/3C-Nico Infinity.mp4", "column": 3, "order": 90 },
     { "file": "videos/Al3x.mp4", "column": 3, "order": 100 },
     { "file": "videos/The Mitchell.mp4", "column": 3, "order": 110 },
-    { "file": "media/3B-Adventurer_Camper_Exterior.jpg", "column": 3, "order": 85 },
+    { "file": "media/3B-Adventurer_Camper_Exterior.jpg", "column": 3, "order": 25 },
 
     { "file": "media/4A-Trysil_Ski_Cabins.jpg", "column": 4, "order": 10 },
     { "file": "media/4B-Wall_of_Fame_Event_Poster.jpg", "column": 4, "order": 20 },
