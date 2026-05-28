@@ -426,6 +426,8 @@
         let portfolioItems = [];
         let currentModalIndex = -1;
         let savedScrollY = 0;
+        let pendingGridRebalance = null;
+        let isRenderingGrid = false;
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         if (!isTouchDevice) {
             document.body.classList.add('can-hover');
@@ -554,9 +556,18 @@
         };
 
         const estimateItemHeight = (item) => {
+            const itemGap = window.matchMedia('(min-width: 640px)').matches ? 0.09 : 0.06;
             if (isPortraitCamperMedia(item)) return 16 / 9;
-            if (item.aspectRatio) return 1 / item.aspectRatio;
-            return 1;
+            const mediaHeight = item.aspectRatio ? 1 / item.aspectRatio : 1;
+            return mediaHeight + itemGap;
+        };
+
+        const scheduleGridRebalance = () => {
+            if (isRenderingGrid || !portfolioItems.length) return;
+            clearTimeout(pendingGridRebalance);
+            pendingGridRebalance = setTimeout(() => {
+                renderGrid(portfolioItems);
+            }, 150);
         };
 
         const grid = document.getElementById('portfolio-grid');
@@ -713,6 +724,7 @@
                     } else {
                         item.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
                     }
+                    scheduleGridRebalance();
                 }, { once: true });
                 
                 if (!isTouchDevice) {
@@ -734,6 +746,7 @@
                     if (!item.style.aspectRatio) {
                         item.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
                     }
+                    scheduleGridRebalance();
                 }, { once: true });
                 contentWrapper.appendChild(img);
             }
@@ -753,6 +766,7 @@
         };
 
         const renderGrid = (items) => {
+            isRenderingGrid = true;
             const grid = document.getElementById('portfolio-grid');
             const loader = document.getElementById('loader');
             grid.innerHTML = '';
@@ -810,6 +824,7 @@
             document.querySelectorAll('.masonry-item').forEach(item => {
                 fadeInObserver.observe(item);
             });
+            isRenderingGrid = false;
         };
 
         const openModal = (index) => {
