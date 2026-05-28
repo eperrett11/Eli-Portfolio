@@ -12,7 +12,7 @@
     { "file": "media/Hammarbybacken Resort.jpg", "column": 4, "order": 95 },
     { "file": "videos/4A-Adventurer_Camper_Exterior_Portrait.mp4", "column": 2, "order": 1 },
     { "file": "media/Okhissa_Lake_Lodge.jpg", "column": 1, "order": 90 },
-    { "file": "media/Vintage_Farms_Vingette.jpg", "column": 1, "order": 100 },
+    { "file": "media/Vintage_Farms_Vingette.jpg", "column": 1, "order": 100, "hidden": true },
     { "file": "media/AI_Vignette_Cowork.jpg", "column": 1, "order": 105 },
     { "file": "videos/Mista Mango.mp4", "column": 1, "order": 110 },
     { "file": "videos/Winter Window.mp4", "column": 1, "order": 115 },
