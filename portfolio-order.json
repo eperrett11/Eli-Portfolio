@@ -4,7 +4,7 @@
   "items": [
     { "file": "media/1A-Salmon_Corn_Hole.jpg", "column": 1, "order": 10 },
     { "file": "media/1B-Industrial Road.jpg", "column": 1, "order": 20 },
-    { "file": "media/1C-Timber_Ridge.jpg", "column": 1, "order": 30 },
+    { "file": "media/1C-Timber_Ridge.jpg", "column": 1, "order": 3 },
     { "file": "media/1D-Kayak Locker.jpg", "column": 1, "order": 40 },
     { "file": "media/Beach_Hut.jpg", "column": 1, "order": 50 },
     { "file": "media/Centennial_Yards_Hotel.jpg", "column": 1, "order": 60 },
