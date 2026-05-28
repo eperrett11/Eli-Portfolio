@@ -36,6 +36,7 @@
     { "file": "media/Bjornvallen.jpg", "column": 3, "order": 40 },
     { "file": "media/El_Azufre_Cabin.jpg", "column": 3, "order": 50 },
     { "file": "media/Industrial Road Patio.jpg", "column": 3, "order": 60 },
+    { "file": "videos/2B-Adventurer_Camper_Cinemagraph.mp4", "column": 3, "order": 65 },
     { "file": "media/Pho_Hot_Tub.jpg", "column": 3, "order": 70 },
     { "file": "videos/1C-Adventurer_Camper_Interior_Portrait.mp4", "column": 3, "order": 35 },
     { "file": "videos/3C-Nico Infinity.mp4", "column": 3, "order": 90 },
