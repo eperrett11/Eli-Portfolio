@@ -590,8 +590,7 @@
                     .filter(file => imageExtensions.includes(file.name.substring(file.name.lastIndexOf('.')).toLowerCase()))
                     .forEach(file => {
                         const key = file.name.split(' - ')[0];
-                        const isPreferredCamperPoster = /(?:adventurer|scout)[\s_-]*camper/i.test(file.name) && /poster-square/i.test(file.name);
-                        if (!posterMap.has(key) || isPreferredCamperPoster) {
+                        if (!posterMap.has(key)) {
                             posterMap.set(key, file.download_url);
                         }
                     });
@@ -664,21 +663,9 @@
                 video.className = isCamper
                     ? 'absolute inset-0 w-full h-full object-cover'
                     : 'w-full h-full object-cover';
-                video.preload = 'metadata';
+                video.preload = isCamper ? 'auto' : 'metadata';
 
-                let posterImg = null;
-                if (isCamper && itemData.posterUrl) {
-                    posterImg = document.createElement('div');
-                    posterImg.setAttribute('aria-hidden', 'true');
-                    posterImg.className = 'absolute inset-0 z-[1] bg-cover bg-center bg-no-repeat transition-opacity duration-150';
-                    posterImg.style.backgroundImage = `url("${itemData.posterUrl}")`;
-                    contentWrapper.appendChild(posterImg);
-                    video.addEventListener('playing', () => {
-                        posterImg.classList.add('opacity-0');
-                    });
-                }
-
-                if (itemData.posterUrl) {
+                if (itemData.posterUrl && !isCamper) {
                     const posterProbe = new Image();
                     posterProbe.onload = () => {
                         if (!item.style.aspectRatio) {
@@ -701,9 +688,6 @@
                     item.addEventListener('mouseleave', () => {
                         video.pause();
                         video.currentTime = 0;
-                        if (posterImg) {
-                            posterImg.classList.remove('opacity-0');
-                        }
                     });
                 }
                 contentWrapper.appendChild(video);
