@@ -521,6 +521,7 @@
         const GITHUB_VIDEOS_API_URL = 'https://api.github.com/repos/eperrett11/Media/contents/videos';
         const PORTFOLIO_ORDER_URL = 'portfolio-order.json';
         const isCamperMedia = (item) => /(?:adventurer|scout)[\s_-]*camper/i.test(`${item.originalName || ''} ${item.title || ''}`);
+        const isPortraitCamperMedia = (item) => isCamperMedia(item) && !/cinemagraph/i.test(`${item.originalName || ''} ${item.title || ''}`);
         const normalizePortfolioPath = (path) => (path || '').replace(/^\/+/, '').replace(/\\/g, '/');
         let portfolioOrderMap = new Map();
 
@@ -666,29 +667,29 @@
                 item.classList.add('video-item');
             }
             item.onclick = () => openModal(itemData.id);
-            if (isCamperMedia(itemData)) {
+            if (isPortraitCamperMedia(itemData)) {
                 item.style.setProperty('aspect-ratio', '9 / 16', 'important');
             }
 
-            const isCamper = isCamperMedia(itemData);
+            const isPortraitCamper = isPortraitCamperMedia(itemData);
             const contentWrapper = document.createElement('div');
-            contentWrapper.className = isCamper && itemData.type === 'video'
+            contentWrapper.className = isPortraitCamper && itemData.type === 'video'
                 ? 'item-content-wrapper relative bg-gray-200'
                 : 'item-content-wrapper';
 
             if (itemData.type === 'video') {
                 const video = document.createElement('video');
                 video.src = itemData.videoUrl;
-                video.poster = isCamper ? '' : itemData.posterUrl;
+                video.poster = isPortraitCamper ? '' : itemData.posterUrl;
                 video.muted = true;
                 video.loop = true;
                 video.playsInline = true;
-                video.className = isCamper
+                video.className = isPortraitCamper
                     ? 'absolute inset-0 w-full h-full object-cover'
                     : 'w-full h-full object-cover';
-                video.preload = isCamper ? 'auto' : 'metadata';
+                video.preload = isPortraitCamper ? 'auto' : 'metadata';
 
-                if (itemData.posterUrl && !isCamper) {
+                if (itemData.posterUrl && !isPortraitCamper) {
                     const posterProbe = new Image();
                     posterProbe.onload = () => {
                         if (!item.style.aspectRatio) {
@@ -699,7 +700,7 @@
                 }
 
                 video.addEventListener('loadedmetadata', () => {
-                    if (isCamper) {
+                    if (isPortraitCamper) {
                         item.style.setProperty('aspect-ratio', '9 / 16', 'important');
                     } else {
                         item.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
