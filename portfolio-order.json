@@ -14,8 +14,8 @@
     { "file": "media/Vintage_Farms_Vingette.jpg", "column": 1, "order": 100 },
     { "file": "videos/Mista Mango.mp4", "column": 1, "order": 110 },
     { "file": "videos/Winter Window.mp4", "column": 1, "order": 120 },
-    { "file": "media/4C-Adventurer_Camper_Interior.jpg", "column": 1, "order": 130 },
-    { "file": "videos/2A-Adventurer_Camper_Exterior_Portrait.mp4", "column": 1, "order": 140 },
+    { "file": "media/4C-Adventurer_Camper_Interior.jpg", "column": 1, "order": 55 },
+    { "file": "videos/2A-Adventurer_Camper_Exterior_Portrait.mp4", "column": 1, "order": 95 },
 
     { "file": "media/2A-Okhissa_Lake.jpg", "column": 2, "order": 10 },
     { "file": "media/2B-Heli Ski Lodge.jpg", "column": 2, "order": 20 },
@@ -27,8 +27,8 @@
     { "file": "media/Palisades.jpg", "column": 2, "order": 80 },
     { "file": "media/Winterfest - THE RALLY.jpg", "column": 2, "order": 90 },
     { "file": "videos/Oakley Vision Performance Center.mp4", "column": 2, "order": 100 },
-    { "file": "media/2C-Adventurer_Camper_Exterior.jpg", "column": 2, "order": 110 },
-    { "file": "videos/3C-Adventurer_Camper_Exterior_Portrait.mp4", "column": 2, "order": 120 },
+    { "file": "media/2C-Adventurer_Camper_Exterior.jpg", "column": 2, "order": 45 },
+    { "file": "videos/3C-Adventurer_Camper_Exterior_Portrait.mp4", "column": 2, "order": 75 },
 
     { "file": "media/3A-Bishop_Ranch_Cafe.jpg", "column": 3, "order": 10 },
     { "file": "media/3B-Oakley_Vision_Preformance_Center.jpg", "column": 3, "order": 20 },
@@ -37,11 +37,11 @@
     { "file": "media/El_Azufre_Cabin.jpg", "column": 3, "order": 50 },
     { "file": "media/Industrial Road Patio.jpg", "column": 3, "order": 60 },
     { "file": "media/Pho_Hot_Tub.jpg", "column": 3, "order": 70 },
-    { "file": "videos/1C-Adventurer_Camper_Interior_Portrait.mp4", "column": 3, "order": 80 },
+    { "file": "videos/1C-Adventurer_Camper_Interior_Portrait.mp4", "column": 3, "order": 35 },
     { "file": "videos/3C-Nico Infinity.mp4", "column": 3, "order": 90 },
     { "file": "videos/Al3x.mp4", "column": 3, "order": 100 },
     { "file": "videos/The Mitchell.mp4", "column": 3, "order": 110 },
-    { "file": "media/3B-Adventurer_Camper_Exterior.jpg", "column": 3, "order": 120 },
+    { "file": "media/3B-Adventurer_Camper_Exterior.jpg", "column": 3, "order": 85 },
 
     { "file": "media/4A-Trysil_Ski_Cabins.jpg", "column": 4, "order": 10 },
     { "file": "media/4B-Wall_of_Fame_Event_Poster.jpg", "column": 4, "order": 20 },
@@ -51,8 +51,8 @@
     { "file": "media/Lloyd_Center_Masterplan.jpg", "column": 4, "order": 60 },
     { "file": "media/Vintage_Farms.jpg", "column": 4, "order": 70 },
     { "file": "videos/Entertainment Center.mp4", "column": 4, "order": 80 },
-    { "file": "media/1A-Adventurer_Camper_Exterior.jpg", "column": 4, "order": 90 },
+    { "file": "media/1A-Adventurer_Camper_Exterior.jpg", "column": 4, "order": 25 },
     { "file": "videos/Vintage Farms Gym.mp4", "column": 4, "order": 100 },
-    { "file": "videos/2D-Adventurer_Camper_Interior_Portrait.mp4", "column": 4, "order": 110 }
+    { "file": "videos/2D-Adventurer_Camper_Interior_Portrait.mp4", "column": 4, "order": 65 }
   ]
 }
