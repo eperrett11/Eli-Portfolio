@@ -590,7 +590,10 @@
                     .filter(file => imageExtensions.includes(file.name.substring(file.name.lastIndexOf('.')).toLowerCase()))
                     .forEach(file => {
                         const key = file.name.split(' - ')[0];
-                        posterMap.set(key, file.download_url);
+                        const isPreferredCamperPoster = /(?:adventurer|scout)[\s_-]*camper/i.test(file.name) && /poster-square/i.test(file.name);
+                        if (!posterMap.has(key) || isPreferredCamperPoster) {
+                            posterMap.set(key, file.download_url);
+                        }
                     });
                 
                 const videoFiles = allVideoRepoFiles.filter(file => file.name.toLowerCase().endsWith('.mp4'));
@@ -665,11 +668,10 @@
 
                 let posterImg = null;
                 if (isCamper && itemData.posterUrl) {
-                    posterImg = document.createElement('img');
-                    posterImg.src = itemData.posterUrl;
-                    posterImg.alt = itemData.title;
-                    posterImg.loading = 'lazy';
-                    posterImg.className = 'absolute inset-0 z-[1] w-full h-full object-cover transition-opacity duration-150';
+                    posterImg = document.createElement('div');
+                    posterImg.setAttribute('aria-hidden', 'true');
+                    posterImg.className = 'absolute inset-0 z-[1] bg-cover bg-center bg-no-repeat transition-opacity duration-150';
+                    posterImg.style.backgroundImage = `url("${itemData.posterUrl}")`;
                     contentWrapper.appendChild(posterImg);
                     video.addEventListener('playing', () => {
                         posterImg.classList.add('opacity-0');
