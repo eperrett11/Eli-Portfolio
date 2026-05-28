@@ -542,14 +542,21 @@
             const orderEntry = portfolioOrderMap.get(item.mediaPath);
             if (!orderEntry) return item;
 
-            item.gridColumn = Number(orderEntry.column);
+            item.pinnedColumn = Number(orderEntry.pinnedColumn);
             item.gridOrder = Number(orderEntry.order);
+            item.aspectRatio = Number(orderEntry.aspectRatio);
             item.hidden = orderEntry.hidden === true;
             if (orderEntry.title) item.title = orderEntry.title;
             if (Object.prototype.hasOwnProperty.call(orderEntry, 'description')) {
                 item.description = orderEntry.description;
             }
             return item;
+        };
+
+        const estimateItemHeight = (item) => {
+            if (isPortraitCamperMedia(item)) return 16 / 9;
+            if (item.aspectRatio) return 1 / item.aspectRatio;
+            return 1;
         };
 
         const grid = document.getElementById('portfolio-grid');
@@ -700,6 +707,7 @@
                 }
 
                 video.addEventListener('loadedmetadata', () => {
+                    itemData.aspectRatio = video.videoWidth / video.videoHeight;
                     if (isPortraitCamper) {
                         item.style.setProperty('aspect-ratio', '9 / 16', 'important');
                     } else {
@@ -722,6 +730,7 @@
                 img.className = 'w-full h-full object-cover';
 
                 img.addEventListener('load', () => {
+                    itemData.aspectRatio = img.naturalWidth / img.naturalHeight;
                     if (!item.style.aspectRatio) {
                         item.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
                     }
@@ -755,53 +764,33 @@
             };
             const numColumns = getColumnCount();
 
-            const columns = Array.from({ length: 4 }, () => {
+            const columns = Array.from({ length: numColumns }, () => {
                 const col = document.createElement('div');
                 col.className = 'flex flex-col gap-4 sm:gap-6';
                 return col;
             });
 
-            const orderedItems = [];
-            const fallbackColumnItems = [];
-            const unassignedItems = [];
-            items.filter(item => !item.hidden).forEach(item => {
-                if (Number.isFinite(item.gridColumn) && Number.isFinite(item.gridOrder)) {
-                    orderedItems.push(item);
-                    return;
-                }
-                const match = (item.originalName || '').match(/^(\d+)/);
-                if (match) {
-                    const colIndex = parseInt(match[1], 10) - 1;
-                    if (colIndex >= 0 && colIndex < 4) {
-                        fallbackColumnItems.push({ item, colIndex });
-                        return;
-                    }
-                }
-                unassignedItems.push(item);
-            });
-
-            orderedItems
-                .sort((a, b) => a.gridOrder - b.gridOrder || (a.mediaPath || '').localeCompare(b.mediaPath || ''))
-                .forEach(item => {
-                    const colIndex = Math.max(0, Math.min(3, item.gridColumn - 1));
-                    columns[colIndex].appendChild(createGridItem(item));
+            const columnHeights = Array.from({ length: numColumns }, () => 0);
+            const visibleItems = items
+                .filter(item => !item.hidden)
+                .sort((a, b) => {
+                    const orderA = Number.isFinite(a.gridOrder) ? a.gridOrder : Number.MAX_SAFE_INTEGER;
+                    const orderB = Number.isFinite(b.gridOrder) ? b.gridOrder : Number.MAX_SAFE_INTEGER;
+                    return orderA - orderB || (a.mediaPath || a.originalName || '').localeCompare(b.mediaPath || b.originalName || '');
                 });
 
-            fallbackColumnItems.forEach(({ item, colIndex }) => {
-                columns[colIndex].appendChild(createGridItem(item));
-            });
-
-            unassignedItems.forEach((item, index) => {
-                const match = (item.originalName || '').match(/^(\d+)/);
-                if (match) {
-                    const colIndex = parseInt(match[1], 10) - 1;
-                    if (colIndex >= 0 && colIndex < 4) {
-                        columns[colIndex].appendChild(createGridItem(item));
-                        return;
-                    }
+            visibleItems.forEach((item) => {
+                let colIndex = -1;
+                if (Number.isFinite(item.pinnedColumn)) {
+                    colIndex = Math.max(0, Math.min(numColumns - 1, item.pinnedColumn - 1));
+                } else {
+                    colIndex = columnHeights
+                        .map((height, index) => ({ height, index }))
+                        .sort((a, b) => a.height - b.height || a.index - b.index)[0].index;
                 }
-                const colIndex = index % numColumns;
+
                 columns[colIndex].appendChild(createGridItem(item));
+                columnHeights[colIndex] += estimateItemHeight(item);
             });
             
             columns.forEach(col => grid.appendChild(col));
