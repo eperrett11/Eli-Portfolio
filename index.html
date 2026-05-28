@@ -119,6 +119,16 @@
         will-change: transform;
         backface-visibility: hidden;
       }
+      .video-item .item-content-wrapper {
+        transition: none;
+        transform: none;
+        will-change: auto;
+      }
+      .video-item video {
+        display: block;
+        backface-visibility: hidden;
+        transform: translateZ(0);
+      }
       /* Hover effects only for non-touch devices, added via JS */
       .can-hover .masonry-item.is-visible:hover {
         z-index: 10;
@@ -690,7 +700,6 @@
                     item.addEventListener('mouseenter', () => video.play().catch(e => console.log("Autoplay prevented on hover.")));
                     item.addEventListener('mouseleave', () => {
                         video.pause();
-                        video.currentTime = 0;
                     });
                 }
                 contentWrapper.appendChild(video);
