@@ -32,7 +32,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Roboto+Mono:wght@100..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;900&family=Roboto+Mono:wght@100..700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -99,6 +99,23 @@
       }
       .animate-gentle-bob {
         animation: gentle-bob 2.5s ease-in-out infinite;
+      }
+      .header-lockup {
+        display: inline-block;
+      }
+      .header-title {
+        white-space: nowrap;
+      }
+      .header-tagline {
+        display: block;
+        width: 100%;
+        font-family: 'Montserrat', sans-serif;
+        font-size: clamp(0.54rem, 1.85vw, 0.88rem);
+        font-weight: 500;
+        line-height: 1.2;
+        text-align: justify;
+        text-align-last: justify;
+        white-space: nowrap;
       }
       .masonry-item {
         opacity: 0;
@@ -247,9 +264,9 @@
     <div id="root" class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <header class="flex flex-col md:flex-row md:justify-between md:items-center text-center md:text-left mb-12 sm:mb-16">
         <div class="flex flex-col items-center md:items-start">
-          <div>
+          <div class="header-lockup">
             <div class="flex items-center justify-center md:justify-start mb-2">
-              <h1 id="animated-header" class="font-display text-2xl sm:text-3xl md:text-2xl lg:text-4xl font-black text-black">
+              <h1 id="animated-header" class="header-title font-display text-2xl sm:text-3xl md:text-2xl lg:text-4xl font-black text-black">
                 <span class="tracking-wider">
                   ELI
                 </span>
@@ -264,7 +281,7 @@
               </h1>
             </div>
             <p
-              class="text-lg text-gray-600 max-w-md sm:max-w-lg mx-auto md:mx-0 animate-text-in balanced-text"
+              class="header-tagline text-gray-600 animate-text-in"
               style="animation-delay: 1000ms"
             >
               Helping designers and brands communicate ideas
