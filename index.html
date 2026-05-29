@@ -529,34 +529,103 @@
             .replace(/[-_]/g, ' ')
             .trim()
             .replace(/\b\w/g, l => l.toUpperCase());
-        let portfolioOrderMap = new Map();
+        let portfolioManifest = {
+            featured: [],
+            hidden: [],
+            metadata: {},
+            shuffleSeed: 'default'
+        };
+
+        const normalizePortfolioManifest = (manifest) => {
+            const normalized = {
+                featured: [],
+                hidden: [],
+                metadata: {},
+                shuffleSeed: String(manifest?.shuffleSeed || 'default')
+            };
+
+            if (Array.isArray(manifest?.featured)) {
+                normalized.featured = manifest.featured.map(normalizePortfolioPath);
+            }
+
+            if (Array.isArray(manifest?.hidden)) {
+                normalized.hidden = manifest.hidden.map(normalizePortfolioPath);
+            }
+
+            if (manifest?.metadata && typeof manifest.metadata === 'object') {
+                Object.entries(manifest.metadata).forEach(([file, metadata]) => {
+                    normalized.metadata[normalizePortfolioPath(file)] = metadata || {};
+                });
+            }
+
+            if (Array.isArray(manifest?.items)) {
+                manifest.items.forEach(entry => {
+                    const file = normalizePortfolioPath(entry.file);
+                    normalized.metadata[file] = {
+                        ...normalized.metadata[file],
+                        aspectRatio: entry.aspectRatio,
+                        title: entry.title,
+                        description: entry.description
+                    };
+                    if (entry.hidden === true && !normalized.hidden.includes(file)) {
+                        normalized.hidden.push(file);
+                    }
+                });
+            }
+
+            return normalized;
+        };
 
         const fetchPortfolioOrder = async () => {
             try {
                 const response = await fetch(`${PORTFOLIO_ORDER_URL}?v=${Date.now()}`, { cache: 'no-store' });
-                if (!response.ok) return new Map();
+                if (!response.ok) return normalizePortfolioManifest({});
                 const manifest = await response.json();
-                return new Map((manifest.items || []).map(entry => [normalizePortfolioPath(entry.file), entry]));
+                return normalizePortfolioManifest(manifest);
             } catch (error) {
                 console.warn('Could not load portfolio order manifest:', error);
-                return new Map();
+                return normalizePortfolioManifest({});
             }
         };
 
         const applyPortfolioOrder = (item, mediaPath) => {
             item.mediaPath = normalizePortfolioPath(mediaPath);
-            const orderEntry = portfolioOrderMap.get(item.mediaPath);
-            if (!orderEntry) return item;
+            const metadata = portfolioManifest.metadata[item.mediaPath] || {};
 
-            item.pinnedColumn = Number(orderEntry.pinnedColumn);
-            item.gridOrder = Number(orderEntry.order);
-            item.aspectRatio = Number(orderEntry.aspectRatio);
-            item.hidden = orderEntry.hidden === true;
-            if (orderEntry.title) item.title = orderEntry.title;
-            if (Object.prototype.hasOwnProperty.call(orderEntry, 'description')) {
-                item.description = orderEntry.description;
+            item.aspectRatio = Number(metadata.aspectRatio);
+            item.hidden = portfolioManifest.hidden.includes(item.mediaPath);
+            if (metadata.title) item.title = metadata.title;
+            if (Object.prototype.hasOwnProperty.call(metadata, 'description')) {
+                item.description = metadata.description;
             }
             return item;
+        };
+
+        const hashString = (value) => {
+            let hash = 2166136261;
+            for (let i = 0; i < value.length; i += 1) {
+                hash ^= value.charCodeAt(i);
+                hash = Math.imul(hash, 16777619);
+            }
+            return hash >>> 0;
+        };
+
+        const getPortfolioDisplayItems = (items) => {
+            const visibleItems = items.filter(item => !item.hidden);
+            const byPath = new Map(visibleItems.map(item => [item.mediaPath, item]));
+            const featuredItems = portfolioManifest.featured
+                .map(path => byPath.get(path))
+                .filter(Boolean);
+            const featuredPaths = new Set(featuredItems.map(item => item.mediaPath));
+            const shuffledItems = visibleItems
+                .filter(item => !featuredPaths.has(item.mediaPath))
+                .sort((a, b) => {
+                    const hashA = hashString(`${portfolioManifest.shuffleSeed}:${a.mediaPath}`);
+                    const hashB = hashString(`${portfolioManifest.shuffleSeed}:${b.mediaPath}`);
+                    return hashA - hashB || a.mediaPath.localeCompare(b.mediaPath);
+                });
+
+            return [...featuredItems, ...shuffledItems];
         };
 
         const estimateItemHeight = (item) => {
@@ -578,12 +647,12 @@
             if (mediaFetched) return;
             mediaFetched = true;
             try {
-                const [mediaResponse, videosResponse, orderMap] = await Promise.all([
+                const [mediaResponse, videosResponse, manifest] = await Promise.all([
                     fetch(GITHUB_MEDIA_API_URL),
                     fetch(GITHUB_VIDEOS_API_URL),
                     fetchPortfolioOrder()
                 ]);
-                portfolioOrderMap = orderMap;
+                portfolioManifest = manifest;
 
                 if (!mediaResponse.ok || !videosResponse.ok) {
                     throw new Error(`Failed to fetch media from GitHub. Status: ${mediaResponse.status}, ${videosResponse.status}`);
@@ -646,8 +715,7 @@
                     }, `videos/${file.name}`);
                 });
 
-                portfolioItems = [...images, ...videos]
-                    .sort((a, b) => (a.originalName || '').localeCompare(b.originalName || ''));
+                portfolioItems = getPortfolioDisplayItems([...images, ...videos]);
                 
                 if (portfolioItems.length === 0) {
                    document.getElementById('loader').classList.add('hidden');
@@ -776,23 +844,12 @@
             });
 
             const columnHeights = Array.from({ length: numColumns }, () => 0);
-            const visibleItems = items
-                .filter(item => !item.hidden)
-                .sort((a, b) => {
-                    const orderA = Number.isFinite(a.gridOrder) ? a.gridOrder : Number.MAX_SAFE_INTEGER;
-                    const orderB = Number.isFinite(b.gridOrder) ? b.gridOrder : Number.MAX_SAFE_INTEGER;
-                    return orderA - orderB || (a.mediaPath || a.originalName || '').localeCompare(b.mediaPath || b.originalName || '');
-                });
+            const visibleItems = items.filter(item => !item.hidden);
 
             visibleItems.forEach((item) => {
-                let colIndex = -1;
-                if (Number.isFinite(item.pinnedColumn)) {
-                    colIndex = Math.max(0, Math.min(numColumns - 1, item.pinnedColumn - 1));
-                } else {
-                    colIndex = columnHeights
-                        .map((height, index) => ({ height, index }))
-                        .sort((a, b) => a.height - b.height || a.index - b.index)[0].index;
-                }
+                const colIndex = columnHeights
+                    .map((height, index) => ({ height, index }))
+                    .sort((a, b) => a.height - b.height || a.index - b.index)[0].index;
 
                 columns[colIndex].appendChild(createGridItem(item));
                 columnHeights[colIndex] += estimateItemHeight(item);

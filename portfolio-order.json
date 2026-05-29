@@ -1,293 +1,191 @@
 {
-  "version": 1,
-  "notes": "Edit order to control which media appears closer to the top. Lower numbers appear sooner; the site automatically places each item into the shortest column. Use pinnedColumn (1-4) only when an item must stay in a specific column. Set hidden to true to hide an item without deleting media.",
-  "items": [
-    {
-      "file": "media/1A-Salmon_Corn_Hole.jpg",
-      "order": 10,
+  "version": 2,
+  "notes": "Featured items appear first, then all other visible media is shuffled using shuffleSeed. To change the random order later, update shuffleSeed. Add paths to featured to keep them at the top, add paths to hidden to hide without deleting media, and use metadata for aspectRatio/title/description overrides.",
+  "shuffleSeed": "2026-05-29-a",
+  "featured": [
+    "videos/4A-Adventurer_Camper_Exterior_Portrait.mp4",
+    "media/AI_Vignette_Oakley_Lounge.jpg",
+    "media/1A-Salmon_Corn_Hole.jpg",
+    "media/Okhissa_Lake_Lodge.jpg",
+    "media/3A-Bishop_Ranch_Cafe.jpg",
+    "media/1C-Timber_Ridge.jpg",
+    "media/2B-Heli Ski Lodge.jpg"
+  ],
+  "hidden": [
+    "media/Vintage_Farms_Vingette.jpg",
+    "videos/2A-Adventurer_Camper_Exterior_Portrait.mp4"
+  ],
+  "metadata": {
+    "media/1A-Salmon_Corn_Hole.jpg": {
       "aspectRatio": 0.85
     },
-    {
-      "file": "media/1B-Industrial Road.jpg",
-      "order": 30,
+    "media/1B-Industrial Road.jpg": {
       "aspectRatio": 1.8002
     },
-    {
-      "file": "media/1C-Timber_Ridge.jpg",
-      "order": 20,
+    "media/1C-Timber_Ridge.jpg": {
       "aspectRatio": 0.799
     },
-    {
-      "file": "media/1D-Kayak Locker.jpg",
-      "order": 40,
+    "media/1D-Kayak Locker.jpg": {
       "aspectRatio": 1.4999
     },
-    {
-      "file": "media/Beach_Hut.jpg",
-      "order": 50,
+    "media/Beach_Hut.jpg": {
       "aspectRatio": 0.8
     },
-    {
-      "file": "media/Centennial_Yards_Hotel.jpg",
-      "order": 60,
+    "media/Centennial_Yards_Hotel.jpg": {
       "aspectRatio": 1.7781
     },
-    {
-      "file": "media/AI_Vignette_Alpine_Cocoa.jpg",
-      "order": 65,
+    "media/AI_Vignette_Alpine_Cocoa.jpg": {
       "aspectRatio": 0.8056
     },
-    {
-      "file": "media/Hammarbybacken Resort.jpg",
-      "order": 95,
+    "media/Hammarbybacken Resort.jpg": {
       "aspectRatio": 1.777
     },
-    {
-      "file": "videos/4A-Adventurer_Camper_Exterior_Portrait.mp4",
-      "order": 1,
+    "videos/4A-Adventurer_Camper_Exterior_Portrait.mp4": {
       "aspectRatio": 0.5625
     },
-    {
-      "file": "media/Okhissa_Lake_Lodge.jpg",
-      "order": 90,
+    "media/Okhissa_Lake_Lodge.jpg": {
       "aspectRatio": 1.5006
     },
-    {
-      "file": "media/Vintage_Farms_Vingette.jpg",
-      "order": 100,
-      "hidden": true,
+    "media/Vintage_Farms_Vingette.jpg": {
       "aspectRatio": 0.8004
     },
-    {
-      "file": "media/AI_Vignette_Cowork.jpg",
-      "order": 105,
+    "media/AI_Vignette_Cowork.jpg": {
       "aspectRatio": 0.8056
     },
-    {
-      "file": "videos/Mista Mango.mp4",
-      "order": 110,
+    "videos/Mista Mango.mp4": {
       "aspectRatio": 1.7778
     },
-    {
-      "file": "videos/Winter Window.mp4",
-      "order": 115,
+    "videos/Winter Window.mp4": {
       "aspectRatio": 1.4815
     },
-    {
-      "file": "media/4C-Adventurer_Camper_Interior.jpg",
-      "order": 55,
+    "media/4C-Adventurer_Camper_Interior.jpg": {
       "aspectRatio": 0.5625
     },
-    {
-      "file": "videos/2A-Adventurer_Camper_Exterior_Portrait.mp4",
-      "order": 95,
-      "hidden": true,
+    "videos/2A-Adventurer_Camper_Exterior_Portrait.mp4": {
       "aspectRatio": 0.5625
     },
-    {
-      "file": "media/2A-Okhissa_Lake.jpg",
-      "order": 10,
+    "media/2A-Okhissa_Lake.jpg": {
       "aspectRatio": 1.7781
     },
-    {
-      "file": "media/2B-Heli Ski Lodge.jpg",
-      "order": 20,
+    "media/2B-Heli Ski Lodge.jpg": {
       "aspectRatio": 1.7777
     },
-    {
-      "file": "media/2C-Teriyaki_Cold_Brew.jpg",
-      "order": 30,
+    "media/2C-Teriyaki_Cold_Brew.jpg": {
       "aspectRatio": 0.85
     },
-    {
-      "file": "media/2D-Leadville_Wayfinding_Map.jpg",
-      "order": 40,
+    "media/2D-Leadville_Wayfinding_Map.jpg": {
       "aspectRatio": 0.8127
     },
-    {
-      "file": "media/Bishop_Ranch_Game_Room.jpg",
-      "order": 50,
+    "media/Bishop_Ranch_Game_Room.jpg": {
       "aspectRatio": 1.4997
     },
-    {
-      "file": "media/AI_Vignette_Cafe_Closeup.jpg",
-      "order": 55,
+    "media/AI_Vignette_Cafe_Closeup.jpg": {
       "aspectRatio": 0.8056
     },
-    {
-      "file": "media/El_Azufe_Cabin_Entry.jpg",
-      "order": 105,
+    "media/El_Azufe_Cabin_Entry.jpg": {
       "aspectRatio": 1.5456
     },
-    {
-      "file": "media/Hatley Pointe.jpg",
-      "order": 70,
+    "media/Hatley Pointe.jpg": {
       "aspectRatio": 1.5456
     },
-    {
-      "file": "media/Palisades.jpg",
-      "order": 80,
+    "media/Palisades.jpg": {
       "aspectRatio": 1.294
     },
-    {
-      "file": "media/AI_Vignette_Game_Room.jpg",
-      "order": 95,
+    "media/AI_Vignette_Game_Room.jpg": {
       "aspectRatio": 0.8056
     },
-    {
-      "file": "media/Winterfest - THE RALLY.jpg",
-      "order": 115,
+    "media/Winterfest - THE RALLY.jpg": {
       "aspectRatio": 0.8
     },
-    {
-      "file": "videos/Oakley Vision Performance Center.mp4",
-      "order": 100,
+    "videos/Oakley Vision Performance Center.mp4": {
       "aspectRatio": 1.7778
     },
-    {
-      "file": "media/2C-Adventurer_Camper_Exterior.jpg",
-      "order": 45,
+    "media/2C-Adventurer_Camper_Exterior.jpg": {
       "aspectRatio": 0.5625
     },
-    {
-      "file": "videos/3C-Adventurer_Camper_Exterior_Portrait.mp4",
-      "order": 75,
+    "videos/3C-Adventurer_Camper_Exterior_Portrait.mp4": {
       "aspectRatio": 0.5625
     },
-    {
-      "file": "media/3A-Bishop_Ranch_Cafe.jpg",
-      "order": 10,
+    "media/3A-Bishop_Ranch_Cafe.jpg": {
       "aspectRatio": 1.4906
     },
-    {
-      "file": "media/3B-Oakley_Vision_Preformance_Center.jpg",
-      "order": 95,
+    "media/3B-Oakley_Vision_Preformance_Center.jpg": {
       "aspectRatio": 1.7778
     },
-    {
-      "file": "media/3C-Vail_Masterplan.jpg",
-      "order": 30,
+    "media/3C-Vail_Masterplan.jpg": {
       "aspectRatio": 2.0112
     },
-    {
-      "file": "media/Bjornvallen.jpg",
-      "order": 40,
+    "media/Bjornvallen.jpg": {
       "aspectRatio": 1.5048
     },
-    {
-      "file": "media/El_Azufre_Cabin.jpg",
-      "order": 50,
+    "media/El_Azufre_Cabin.jpg": {
       "aspectRatio": 1.5456
     },
-    {
-      "file": "media/Industrial Road Patio.jpg",
-      "order": 60,
+    "media/Industrial Road Patio.jpg": {
       "aspectRatio": 1.8002
     },
-    {
-      "file": "videos/2B-Adventurer_Camper_Cinemagraph.mp4",
-      "order": 65,
+    "videos/2B-Adventurer_Camper_Cinemagraph.mp4": {
       "aspectRatio": 1.791
     },
-    {
-      "file": "media/Pho_Hot_Tub.jpg",
-      "order": 70,
+    "media/Pho_Hot_Tub.jpg": {
       "aspectRatio": 0.8917
     },
-    {
-      "file": "media/AI_Vignette_Chalet_Apres.jpg",
-      "order": 75,
+    "media/AI_Vignette_Chalet_Apres.jpg": {
       "aspectRatio": 0.8056
     },
-    {
-      "file": "videos/1C-Adventurer_Camper_Interior_Portrait.mp4",
-      "order": 35,
+    "videos/1C-Adventurer_Camper_Interior_Portrait.mp4": {
       "aspectRatio": 0.5625
     },
-    {
-      "file": "videos/3C-Nico Infinity.mp4",
-      "order": 15,
-      "aspectRatio": 1.0
+    "videos/3C-Nico Infinity.mp4": {
+      "aspectRatio": 1
     },
-    {
-      "file": "videos/Al3x.mp4",
-      "order": 100,
+    "videos/Al3x.mp4": {
       "aspectRatio": 1.3952
     },
-    {
-      "file": "media/AI_Vignette_Lobby_Chess.jpg",
-      "order": 105,
+    "media/AI_Vignette_Lobby_Chess.jpg": {
       "aspectRatio": 0.8056
     },
-    {
-      "file": "videos/The Mitchell.mp4",
-      "order": 110,
+    "videos/The Mitchell.mp4": {
       "aspectRatio": 1.7778
     },
-    {
-      "file": "media/3B-Adventurer_Camper_Exterior.jpg",
-      "order": 85,
+    "media/3B-Adventurer_Camper_Exterior.jpg": {
       "aspectRatio": 0.5625
     },
-    {
-      "file": "media/4A-Trysil_Ski_Cabins.jpg",
-      "order": 10,
+    "media/4A-Trysil_Ski_Cabins.jpg": {
       "aspectRatio": 0.8
     },
-    {
-      "file": "media/4B-Wall_of_Fame_Event_Poster.jpg",
-      "order": 20,
+    "media/4B-Wall_of_Fame_Event_Poster.jpg": {
       "aspectRatio": 0.8
     },
-    {
-      "file": "media/4C-Timberview.jpg",
-      "order": 30,
+    "media/4C-Timberview.jpg": {
       "aspectRatio": 1.7778
     },
-    {
-      "file": "media/Centennial_Yards_Amenity_Deck.jpg",
-      "order": 40,
+    "media/Centennial_Yards_Amenity_Deck.jpg": {
       "aspectRatio": 1.7781
     },
-    {
-      "file": "media/Emery_Yards.jpg",
-      "order": 50,
+    "media/Emery_Yards.jpg": {
       "aspectRatio": 1.7781
     },
-    {
-      "file": "media/Lloyd_Center_Masterplan.jpg",
-      "order": 60,
+    "media/Lloyd_Center_Masterplan.jpg": {
       "aspectRatio": 1.5985
     },
-    {
-      "file": "media/Vintage_Farms.jpg",
-      "order": 70,
+    "media/Vintage_Farms.jpg": {
       "aspectRatio": 1.7819
     },
-    {
-      "file": "videos/Entertainment Center.mp4",
-      "order": 80,
+    "videos/Entertainment Center.mp4": {
       "aspectRatio": 1.7778
     },
-    {
-      "file": "media/AI_Vignette_Oakley_Lounge.jpg",
-      "order": 5,
+    "media/AI_Vignette_Oakley_Lounge.jpg": {
       "aspectRatio": 0.8056
     },
-    {
-      "file": "media/1A-Adventurer_Camper_Exterior.jpg",
-      "order": 25,
+    "media/1A-Adventurer_Camper_Exterior.jpg": {
       "aspectRatio": 0.5625
     },
-    {
-      "file": "videos/Vintage Farms Gym.mp4",
-      "order": 100,
+    "videos/Vintage Farms Gym.mp4": {
       "aspectRatio": 1.7778
     },
-    {
-      "file": "videos/2D-Adventurer_Camper_Interior_Portrait.mp4",
-      "order": 65,
+    "videos/2D-Adventurer_Camper_Interior_Portrait.mp4": {
       "aspectRatio": 0.5625
     }
-  ]
+  }
 }
