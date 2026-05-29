@@ -1,20 +1,16 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Eli Perrett Portfolio
 
-# Run and deploy your AI Studio app
+Static portfolio site for eliperrett.com.
 
-This contains everything you need to run your app locally.
+The live page is `index.html`. Portfolio media is loaded from the separate `eperrett11/Media` repository through the GitHub contents API.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1sHBCjJSr3U9eU3mmr2nzH40Rmr19z3Dr
+## Ordering
 
-## Run Locally
+Edit `portfolio-order.json` to control the portfolio grid:
 
-**Prerequisites:**  Node.js
+- `featured`: media paths that stay at the top of the grid
+- `hidden`: media paths that should not display
+- `shuffleSeed`: change this value to reshuffle all non-featured items
+- `metadata`: aspect ratios and optional title/description overrides
 
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+New uploaded media appears automatically in the shuffled pool unless it is added to `featured` or `hidden`.
