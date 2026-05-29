@@ -523,6 +523,12 @@
         const isCamperMedia = (item) => /(?:adventurer|scout)[\s_-]*camper/i.test(`${item.originalName || ''} ${item.title || ''}`);
         const isPortraitCamperMedia = (item) => isCamperMedia(item) && !/cinemagraph/i.test(`${item.originalName || ''} ${item.title || ''}`);
         const normalizePortfolioPath = (path) => (path || '').replace(/^\/+/, '').replace(/\\/g, '/');
+        const formatPortfolioTitle = (rawBaseName) => rawBaseName
+            .replace(/^\d+[a-zA-Z]?-/i, '')
+            .replace(/^AI[_\s-]*Vignette[_\s-]*/i, '')
+            .replace(/[-_]/g, ' ')
+            .trim()
+            .replace(/\b\w/g, l => l.toUpperCase());
         let portfolioOrderMap = new Map();
 
         const fetchPortfolioOrder = async () => {
@@ -600,8 +606,7 @@
                 
                 const images = imageFiles.map((file) => {
                     const rawBaseName = file.name.substring(0, file.name.lastIndexOf('.'));
-                    const titleName = rawBaseName.replace(/^\d+[a-zA-Z]?-/i, ''); 
-                    const title = titleName.replace(/[-_]/g, ' ').trim().replace(/\b\w/g, l => l.toUpperCase());
+                    const title = formatPortfolioTitle(rawBaseName);
                     const key = rawBaseName.replace(/[\s_-]/g, '-').toLowerCase();
 
                     return applyPortfolioOrder({
@@ -628,8 +633,7 @@
 
                 const videos = videoFiles.map(file => {
                     const rawBaseName = file.name.substring(0, file.name.lastIndexOf('.'));
-                    const titleName = rawBaseName.replace(/^\d+[a-zA-Z]?-/i, '').replace(/_Portrait$/i, '');
-                    const title = titleName.replace(/[-_]/g, ' ').trim().replace(/\b\w/g, l => l.toUpperCase());
+                    const title = formatPortfolioTitle(rawBaseName.replace(/_Portrait$/i, ''));
                     const key = rawBaseName.replace(/[\s_-]/g, '-').toLowerCase();
 
                     return applyPortfolioOrder({
