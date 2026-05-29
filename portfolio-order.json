@@ -3,15 +3,14 @@
   "notes": "Featured items appear first, then all other visible media is shuffled using shuffleSeed. To change the random order later, update shuffleSeed. Add paths to featured to keep them at the top, add paths to hidden to hide without deleting media, and use metadata for aspectRatio/title/description overrides.",
   "shuffleSeed": "2026-05-29-a",
   "featured": [
-    "videos/4A-Adventurer_Camper_Exterior_Portrait.mp4",
-    "videos/2B-Adventurer_Camper_Cinemagraph.mp4",
-    "media/AI_Vignette_Oakley_Lounge.jpg",
     "media/AI_Vignette_Alpine_Cocoa.jpg",
-    "media/1A-Salmon_Corn_Hole.jpg",
-    "media/Okhissa_Lake_Lodge.jpg",
+    "videos/4A-Adventurer_Camper_Exterior_Portrait.mp4",
     "media/3A-Bishop_Ranch_Cafe.jpg",
-    "media/1C-Timber_Ridge.jpg",
-    "media/2B-Heli Ski Lodge.jpg"
+    "media/AI_Vignette_Oakley_Lounge.jpg",
+    "media/2B-Heli Ski Lodge.jpg",
+    "videos/2B-Adventurer_Camper_Cinemagraph.mp4",
+    "media/1A-Salmon_Corn_Hole.jpg",
+    "media/1C-Timber_Ridge.jpg"
   ],
   "hidden": [
     "media/Vintage_Farms_Vingette.jpg",
