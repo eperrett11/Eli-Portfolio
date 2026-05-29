@@ -1,7 +1,7 @@
 {
   "version": 2,
   "notes": "Featured items appear first, then all other visible media is shuffled using shuffleSeed. To change the random order later, update shuffleSeed. Add paths to featured to keep them at the top, add paths to hidden to hide without deleting media, and use metadata for aspectRatio/title/description overrides.",
-  "shuffleSeed": "2026-05-29-a",
+  "shuffleSeed": "2026-05-29-104912",
   "featured": [
     "media/AI_Vignette_Alpine_Cocoa.jpg",
     "videos/4A-Adventurer_Camper_Exterior_Portrait.mp4",
