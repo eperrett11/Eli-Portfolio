@@ -133,23 +133,138 @@
         text-align-last: justify;
         white-space: nowrap;
       }
+      .case-study-intro {
+        max-width: 820px;
+      }
+      .case-study-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: clamp(1rem, 2vw, 1.5rem);
+        align-items: stretch;
+      }
       .case-study-card {
+        position: relative;
         display: block;
+        min-height: 320px;
         overflow: hidden;
         border-radius: 8px;
-        background: white;
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        background: #111827;
+        color: #fff;
+        isolation: isolate;
+        box-shadow: 0 18px 46px rgba(15, 23, 42, 0.12);
         transition: transform 260ms ease, box-shadow 260ms ease;
       }
       .case-study-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 18px 44px rgba(15, 23, 42, 0.14);
+        transform: translateY(-3px);
+        box-shadow: 0 24px 62px rgba(15, 23, 42, 0.18);
       }
-      .case-study-card img {
+      .case-study-card.featured {
+        grid-column: span 4;
+        min-height: 540px;
+      }
+      .case-study-card.standard {
+        grid-column: span 2;
+      }
+      .case-study-card.wide {
+        grid-column: span 3;
+        min-height: 360px;
+      }
+      .case-study-card img,
+      .case-study-placeholder {
+        position: absolute;
+        inset: 0;
         width: 100%;
-        aspect-ratio: 4 / 3;
+        height: 100%;
         object-fit: cover;
-        display: block;
+        transition: transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .case-study-card:hover img,
+      .case-study-card:hover .case-study-placeholder {
+        transform: scale(1.035);
+      }
+      .case-study-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 15%, rgba(0, 0, 0, 0.38) 60%, rgba(0, 0, 0, 0.76) 100%);
+      }
+      .case-study-content {
+        position: relative;
+        z-index: 2;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: clamp(1.25rem, 2.5vw, 2rem);
+      }
+      .case-study-eyebrow {
+        margin-bottom: 0.75rem;
+        font-size: 0.72rem;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.72);
+      }
+      .case-study-title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 900;
+        font-size: clamp(1.65rem, 3.4vw, 3.2rem);
+        line-height: 0.95;
+        color: #fff;
+      }
+      .case-study-card.standard .case-study-title,
+      .case-study-card.wide .case-study-title {
+        font-size: clamp(1.35rem, 2.2vw, 2.1rem);
+      }
+      .case-study-summary {
+        max-width: 34rem;
+        margin-top: 1rem;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 0.95rem;
+        line-height: 1.65;
+      }
+      .case-study-action {
+        margin-top: 1.4rem;
+        font-size: 0.78rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.86);
+      }
+      .case-study-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.22), transparent 28%),
+          linear-gradient(135deg, #101827 0%, #202a44 48%, #090c13 100%);
+      }
+      .case-study-app-mark {
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        padding: 1.2rem 1.4rem;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.18);
+        backdrop-filter: blur(8px);
+      }
+      @media (max-width: 1023px) {
+        .case-study-card.featured,
+        .case-study-card.standard,
+        .case-study-card.wide {
+          grid-column: span 3;
+        }
+      }
+      @media (max-width: 767px) {
+        .case-study-grid {
+          grid-template-columns: 1fr;
+        }
+        .case-study-card.featured,
+        .case-study-card.standard,
+        .case-study-card.wide {
+          grid-column: 1;
+          min-height: 360px;
+        }
+        .case-study-card.featured {
+          min-height: 460px;
+        }
       }
       .masonry-item {
         opacity: 0;
@@ -348,66 +463,66 @@
 
       <main>
         <section id="case-studies-section" class="content-section animate-fade-in">
-            <div class="text-center my-16 sm:my-24">
-                <h2 class="text-sm font-medium uppercase text-gray-500 tracking-[0.4em]">
-                Case Studies
-                </h2>
-                <p class="mt-6 text-lg text-gray-600 max-w-2xl mx-auto balanced-text">
-                    A closer look at selected projects, process, and outcomes.
+            <div class="case-study-intro my-14 sm:my-20">
+                <p class="text-sm font-medium uppercase text-gray-500 tracking-[0.34em]">Case Studies</p>
+                <h2 class="mt-5 font-display text-4xl sm:text-6xl font-black leading-none text-black balanced-text">Selected project stories</h2>
+                <p class="mt-6 text-lg leading-relaxed text-gray-600 balanced-text">
+                    A tighter look at a few projects with more context around the idea, the visuals, and where the work can go next.
                 </p>
             </div>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                <a href="/case-studies/adventurer-camper/" class="case-study-card group">
+            <div class="case-study-grid">
+                <a href="/case-studies/adventurer-camper/" class="case-study-card featured">
                     <img src="https://raw.githubusercontent.com/eperrett11/Media/main/media/1A-Adventurer_Camper_Exterior.jpg" alt="Adventurer Camper exterior visualization">
-                    <div class="p-5">
-                        <p class="text-xs uppercase tracking-[0.3em] text-gray-500 mb-3">Visualization</p>
-                        <h3 class="text-xl font-bold text-gray-900">Adventurer Camper</h3>
-                        <p class="mt-3 text-sm leading-relaxed text-gray-600">Product visuals, motion, and campaign imagery for a rugged camper launch.</p>
+                    <div class="case-study-content">
+                        <p class="case-study-eyebrow">01 / Product Visualization</p>
+                        <h3 class="case-study-title">Adventurer Camper</h3>
+                        <p class="case-study-summary">Exterior, interior, and motion pieces for a rugged camper campaign.</p>
+                        <p class="case-study-action">View Case Study</p>
                     </div>
                 </a>
-                <a href="/case-studies/oakley/" class="case-study-card group">
+                <a href="/case-studies/oakley/" class="case-study-card standard">
                     <img src="https://raw.githubusercontent.com/eperrett11/Media/main/media/AI_Vignette_Oakley_Lounge.jpg" alt="Oakley lounge visualization">
-                    <div class="p-5">
-                        <p class="text-xs uppercase tracking-[0.3em] text-gray-500 mb-3">Brand Experience</p>
-                        <h3 class="text-xl font-bold text-gray-900">Oakley</h3>
-                        <p class="mt-3 text-sm leading-relaxed text-gray-600">Environmental storytelling, visualization, and a virtual-tour workflow.</p>
+                    <div class="case-study-content">
+                        <p class="case-study-eyebrow">02 / Brand Experience</p>
+                        <h3 class="case-study-title">Oakley</h3>
+                        <p class="case-study-summary">Environmental visuals, lounge concepts, and virtual-tour workflow.</p>
                     </div>
                 </a>
-                <a href="/case-studies/infatuation-food-blog/" class="case-study-card group">
+                <a href="/case-studies/infatuation-food-blog/" class="case-study-card wide">
                     <img src="https://raw.githubusercontent.com/eperrett11/Media/main/media/Pho_Hot_Tub.jpg" alt="Infatuation food blog concept image">
-                    <div class="p-5">
-                        <p class="text-xs uppercase tracking-[0.3em] text-gray-500 mb-3">Concept Art</p>
-                        <h3 class="text-xl font-bold text-gray-900">Infatuation Food Blog</h3>
-                        <p class="mt-3 text-sm leading-relaxed text-gray-600">Playful campaign visuals built around food, culture, and internet humor.</p>
+                    <div class="case-study-content">
+                        <p class="case-study-eyebrow">03 / Concept Art</p>
+                        <h3 class="case-study-title">Infatuation Food Blog</h3>
+                        <p class="case-study-summary">Food culture visuals with a strange little sense of humor.</p>
                     </div>
                 </a>
-                <a href="/case-studies/kayak-locker/" class="case-study-card group">
+                <a href="/case-studies/kayak-locker/" class="case-study-card wide">
                     <img src="https://raw.githubusercontent.com/eperrett11/Media/main/media/1D-Kayak Locker.jpg" alt="Kayak Locker installation visualization">
-                    <div class="p-5">
-                        <p class="text-xs uppercase tracking-[0.3em] text-gray-500 mb-3">Installation</p>
-                        <h3 class="text-xl font-bold text-gray-900">Kayak Locker</h3>
-                        <p class="mt-3 text-sm leading-relaxed text-gray-600">Design visualization and install documentation for a custom amenity feature.</p>
+                    <div class="case-study-content">
+                        <p class="case-study-eyebrow">04 / Installation</p>
+                        <h3 class="case-study-title">Kayak Locker</h3>
+                        <p class="case-study-summary">Design visualization and install documentation for a custom amenity feature.</p>
                     </div>
                 </a>
-                <a href="/case-studies/ski-posters/" class="case-study-card group">
+                <a href="/case-studies/ski-posters/" class="case-study-card standard">
                     <img src="https://raw.githubusercontent.com/eperrett11/Media/main/media/4B-Wall_of_Fame_Event_Poster.jpg" alt="Ski poster design">
-                    <div class="p-5">
-                        <p class="text-xs uppercase tracking-[0.3em] text-gray-500 mb-3">Event Graphics</p>
-                        <h3 class="text-xl font-bold text-gray-900">Ski Posters</h3>
-                        <p class="mt-3 text-sm leading-relaxed text-gray-600">A compact poster series with process photos and physical build details.</p>
+                    <div class="case-study-content">
+                        <p class="case-study-eyebrow">05 / Event Graphics</p>
+                        <h3 class="case-study-title">Ski Posters</h3>
+                        <p class="case-study-summary">A poster series with process photos and physical build details.</p>
                     </div>
                 </a>
-                <a href="/case-studies/hawken-games/" class="case-study-card group">
-                    <div class="aspect-[4/3] bg-gray-900 text-white flex items-center justify-center">
-                        <div class="text-center px-6">
-                            <p class="text-xs uppercase tracking-[0.35em] text-gray-400 mb-4">Vibecoded App</p>
-                            <h3 class="text-3xl font-black tracking-wide">The Hawken Games</h3>
+                <a href="/case-studies/hawken-games/" class="case-study-card standard">
+                    <div class="case-study-placeholder" aria-hidden="true">
+                        <div class="case-study-app-mark">
+                            <p class="text-xs uppercase tracking-[0.32em] text-gray-300 mb-3">Vibecoded App</p>
+                            <p class="font-display text-3xl font-black leading-none">The<br>Hawken<br>Games</p>
                         </div>
                     </div>
-                    <div class="p-5">
-                        <p class="text-xs uppercase tracking-[0.3em] text-gray-500 mb-3">App / Product</p>
-                        <h3 class="text-xl font-bold text-gray-900">The Hawken Games</h3>
-                        <p class="mt-3 text-sm leading-relaxed text-gray-600">A custom app experience with standings, schedules, teams, and game-day utility.</p>
+                    <div class="case-study-content">
+                        <p class="case-study-eyebrow">06 / App Design</p>
+                        <h3 class="case-study-title">The Hawken Games</h3>
+                        <p class="case-study-summary">A custom app experience for teams, schedules, standings, and event-day utility.</p>
                     </div>
                 </a>
             </div>
