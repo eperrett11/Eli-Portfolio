@@ -571,6 +571,14 @@
             ).toLowerCase();
         };
 
+        const cleanAudienceUrl = () => {
+            const audience = getRequestedPortfolioAudience();
+            if ((audience === 'brand' || audience === 'studio') && window.location.pathname === '/') {
+                window.history.replaceState({}, '', `/${audience}/`);
+            }
+        };
+        cleanAudienceUrl();
+
         const normalizePortfolioManifest = (manifest) => {
             const normalized = {
                 featured: [],
