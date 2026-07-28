@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "notes": "Featured items appear first, then all other visible media is shuffled using shuffleSeed. To change the random order later, update shuffleSeed. Add paths to featured to keep them at the top, add paths to hidden to hide without deleting media, and use metadata for aspectRatio/title/description overrides.",
+  "notes": "Featured items appear first, then all other visible media is shuffled using shuffleSeed. The default featured list controls eliperrett.com. Audience versions can be shared with ?version=brand or ?version=studio and use the audiences presets below. To change random order later, update the matching shuffleSeed. Add paths to featured to keep them at the top, add paths to hidden to hide without deleting media, and use metadata for aspectRatio/title/description overrides.",
   "shuffleSeed": "2026-05-29-104912",
   "featured": [
     "media/3A-Bishop_Ranch_Cafe.jpg",
@@ -14,6 +14,40 @@
     "media/2B-Heli Ski Lodge.jpg",
     "videos/4A-Adventurer_Camper_Exterior_Portrait.mp4"
   ],
+  "audiences": {
+    "brand": {
+      "label": "Brand Work",
+      "shuffleSeed": "brand-2026-07-28-01",
+      "featured": [
+        "media/AI_Vignette_Oakley_Lounge.jpg",
+        "videos/Oakley Vision Performance Center.mp4",
+        "media/3B-Oakley_Vision_Preformance_Center.jpg",
+        "videos/3C-Nico Infinity.mp4",
+        "videos/2B-Adventurer_Camper_Cinemagraph.mp4",
+        "media/1A-Adventurer_Camper_Exterior.jpg",
+        "media/1A-Salmon_Corn_Hole.jpg",
+        "media/Pho_Hot_Tub.jpg",
+        "media/4B-Wall_of_Fame_Event_Poster.jpg",
+        "videos/Mista Mango.mp4"
+      ]
+    },
+    "studio": {
+      "label": "Architecture and Landscape Studios",
+      "shuffleSeed": "studio-2026-07-28-01",
+      "featured": [
+        "media/3A-Bishop_Ranch_Cafe.jpg",
+        "media/1C-Timber_Ridge.jpg",
+        "media/2B-Heli Ski Lodge.jpg",
+        "media/Hammarbybacken Resort.jpg",
+        "media/Okhissa_Lake_Lodge.jpg",
+        "media/3C-Vail_Masterplan.jpg",
+        "media/Bjornvallen.jpg",
+        "media/Centennial_Yards_Amenity_Deck.jpg",
+        "media/Emery_Yards.jpg",
+        "media/Lloyd_Center_Masterplan.jpg"
+      ]
+    }
+  },
   "hidden": [
     "media/Vintage_Farms_Vingette.jpg",
     "videos/2A-Adventurer_Camper_Exterior_Portrait.mp4"

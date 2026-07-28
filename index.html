@@ -552,7 +552,18 @@
             featured: [],
             hidden: [],
             metadata: {},
-            shuffleSeed: 'default'
+            shuffleSeed: 'default',
+            audiences: {}
+        };
+
+        const getRequestedPortfolioAudience = () => {
+            const params = new URLSearchParams(window.location.search);
+            return normalizePortfolioPath(
+                params.get('version') ||
+                params.get('audience') ||
+                params.get('view') ||
+                ''
+            ).toLowerCase();
         };
 
         const normalizePortfolioManifest = (manifest) => {
@@ -560,11 +571,28 @@
                 featured: [],
                 hidden: [],
                 metadata: {},
-                shuffleSeed: String(manifest?.shuffleSeed || 'default')
+                shuffleSeed: String(manifest?.shuffleSeed || 'default'),
+                audiences: {}
             };
 
             if (Array.isArray(manifest?.featured)) {
                 normalized.featured = manifest.featured.map(normalizePortfolioPath);
+            }
+
+            if (manifest?.audiences && typeof manifest.audiences === 'object') {
+                Object.entries(manifest.audiences).forEach(([audienceKey, audience]) => {
+                    const key = normalizePortfolioPath(audienceKey).toLowerCase();
+                    normalized.audiences[key] = {
+                        label: audience?.label || key,
+                        featured: Array.isArray(audience?.featured)
+                            ? audience.featured.map(normalizePortfolioPath)
+                            : [],
+                        hidden: Array.isArray(audience?.hidden)
+                            ? audience.hidden.map(normalizePortfolioPath)
+                            : [],
+                        shuffleSeed: String(audience?.shuffleSeed || normalized.shuffleSeed)
+                    };
+                });
             }
 
             if (Array.isArray(manifest?.hidden)) {
@@ -590,6 +618,16 @@
                         normalized.hidden.push(file);
                     }
                 });
+            }
+
+            const requestedAudience = getRequestedPortfolioAudience();
+            const audiencePreset = normalized.audiences[requestedAudience];
+            if (audiencePreset) {
+                normalized.activeAudience = requestedAudience;
+                normalized.activeAudienceLabel = audiencePreset.label;
+                normalized.featured = audiencePreset.featured;
+                normalized.hidden = [...new Set([...normalized.hidden, ...audiencePreset.hidden])];
+                normalized.shuffleSeed = audiencePreset.shuffleSeed;
             }
 
             return normalized;
