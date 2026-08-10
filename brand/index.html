@@ -104,7 +104,7 @@
         width: clamp(2.75rem, 6vw, 4.5rem);
         height: auto;
         flex: 0 0 auto;
-        animation-delay: 650ms;
+        animation-delay: 60ms;
       }
       .header-text-lockup {
         display: inline-block;
@@ -247,6 +247,30 @@
         transform: translateZ(0);
         -webkit-transform: translateZ(0); /* For older Safari */
       }
+      /* Respect a reduced-motion preference: render the finished state, skip the sequence */
+      @media (prefers-reduced-motion: reduce) {
+        .animate-letter-in,
+        .animate-text-in,
+        .animate-slide-in-left,
+        .animate-fade-in,
+        .animate-flip-once {
+          animation: none !important;
+          opacity: 1 !important;
+          transform: none !important;
+        }
+        .masonry-item {
+          opacity: 1 !important;
+          transform: none !important;
+          transition: none !important;
+        }
+        .item-content-wrapper,
+        .flipper {
+          transition: none !important;
+        }
+        html {
+          scroll-behavior: auto !important;
+        }
+      }
       /* Mobile-specific modal navigation */
       @media (max-width: 1023px) {
         #modal-nav-container {
@@ -290,7 +314,7 @@
               </div>
               <p
                 class="header-tagline text-gray-600 animate-text-in"
-                style="animation-delay: 1000ms"
+                style="animation-delay: 380ms"
               >
                 Helping designers and brands communicate ideas
               </p>
@@ -711,7 +735,28 @@
         const modalCloseBtn = document.getElementById('modal-close');
         const modalNextBtn = document.getElementById('modal-next');
         const modalPrevBtn = document.getElementById('modal-prev');
-        
+
+        // Video elements ignore loading="lazy", so they would otherwise fetch on render
+        // no matter where they sit on the page. Hold the source back until the item is
+        // close to the viewport, then attach it at its intended preload level.
+        let videoLoadObserver = null;
+        const resetVideoLoadObserver = () => {
+            if (videoLoadObserver) videoLoadObserver.disconnect();
+            videoLoadObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    const video = entry.target;
+                    if (video.dataset.src) {
+                        video.preload = video.dataset.readyPreload || 'metadata';
+                        video.src = video.dataset.src;
+                        delete video.dataset.src;
+                    }
+                    observer.unobserve(video);
+                });
+            }, { rootMargin: '400px 0px' });
+        };
+        resetVideoLoadObserver();
+
         // --- Core Functions ---
         const fetchAllMedia = async () => {
             if (mediaFetched) return;
@@ -831,7 +876,6 @@
 
             if (itemData.type === 'video') {
                 const video = document.createElement('video');
-                video.src = itemData.videoUrl;
                 video.poster = isPortraitCamper ? '' : itemData.posterUrl;
                 video.muted = true;
                 video.loop = true;
@@ -839,7 +883,13 @@
                 video.className = isPortraitCamper
                     ? 'absolute inset-0 w-full h-full object-cover'
                     : 'w-full h-full object-cover';
-                video.preload = isPortraitCamper ? 'auto' : 'metadata';
+                // Deferred: nothing downloads until videoLoadObserver attaches the source.
+                // Portrait camper items still resolve to 'auto' so their first frame paints
+                // (they have no usable poster), just not while they are off-screen.
+                video.preload = 'none';
+                video.dataset.src = itemData.videoUrl;
+                video.dataset.readyPreload = isPortraitCamper ? 'auto' : 'metadata';
+                videoLoadObserver.observe(video);
 
                 if (itemData.posterUrl && !isPortraitCamper) {
                     const posterProbe = new Image();
@@ -901,6 +951,8 @@
             const grid = document.getElementById('portfolio-grid');
             const loader = document.getElementById('loader');
             grid.innerHTML = '';
+            // Drop observations on the items we just discarded before building new ones.
+            resetVideoLoadObserver();
 
             const getColumnCount = () => {
                 if (window.matchMedia('(min-width: 1024px)').matches) return 4;
@@ -1013,8 +1065,8 @@
           const header = document.getElementById('animated-header');
           const textNodes = Array.from(header.children).map(child => child.textContent.trim());
           header.innerHTML = '';
-          let totalDelay = 800;
-          const letterDelay = 50;
+          let totalDelay = 100;
+          const letterDelay = 14;
 
           textNodes.forEach((text, textIndex) => {
             const spanContainer = document.createElement('span');
@@ -1102,4 +1154,3 @@
     </script>
 </body>
 </html>
-
