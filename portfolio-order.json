@@ -37,6 +37,11 @@
       "label": "Architecture and Landscape Studios",
       "shuffleSeed": "studio-2026-07-28-01",
       "featured": [
+        "media/Stagecoach Aerial.jpg",
+        "media/VALLEY RESORT PLANE.jpg",
+        "media/Keystone Aerial.jpg",
+        "media/Kiroro Aerial.jpg",
+        "media/Skistar Lodge Aerial.jpg",
         "media/1C-Timber_Ridge.jpg",
         "media/2B-Heli Ski Lodge.jpg",
         "media/2A-Okhissa_Lake.jpg",
@@ -62,6 +67,22 @@
     "videos/2A-Adventurer_Camper_Exterior_Portrait.mp4"
   ],
   "metadata": {
+    "media/Stagecoach Aerial.jpg": {
+      "aspectRatio": 1.5455
+    },
+    "media/VALLEY RESORT PLANE.jpg": {
+      "aspectRatio": 1.5456,
+      "title": "Valley Resort Plane"
+    },
+    "media/Keystone Aerial.jpg": {
+      "aspectRatio": 1.5385
+    },
+    "media/Kiroro Aerial.jpg": {
+      "aspectRatio": 1.5385
+    },
+    "media/Skistar Lodge Aerial.jpg": {
+      "aspectRatio": 1.5456
+    },
     "media/1A-Salmon_Corn_Hole.jpg": {
       "aspectRatio": 0.85
     },
