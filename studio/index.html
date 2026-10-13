@@ -292,32 +292,10 @@
   <body class="text-gray-700">
     <div id="root" class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <header class="flex flex-col md:flex-row md:justify-between md:items-center text-center md:text-left mb-12 sm:mb-16">
-        <div class="flex flex-col items-center md:items-start">
+        <div class="flex flex-col items-start">
           <div class="header-lockup">
-            <img src="assets/eli-logo-20260717.png" alt="" class="brand-logo animate-text-in" aria-hidden="true">
-            <div class="header-text-lockup">
-              <div class="flex items-center justify-center md:justify-start mb-1">
-              <h1 id="animated-header" class="header-title font-display text-2xl sm:text-3xl md:text-2xl lg:text-4xl font-black text-black">
-                <span class="tracking-wider">
-                  ELI
-                </span>
-                <span>&nbsp;</span>
-                <span class="tracking-wider">
-                  PERRETT
-                </span>
-                <span>&nbsp;</span>
-                <span class="tracking-wider font-light text-gray-600">
-                  CREATIVE
-                </span>
-              </h1>
-              </div>
-              <p
-                class="header-tagline text-gray-600 animate-text-in"
-                style="animation-delay: 380ms"
-              >
-                Helping designers and brands communicate ideas
-              </p>
-            </div>
+            <img src="assets/eli-logo-20260717.png" alt="Eli Perrett Creative" class="brand-logo animate-text-in">
+
           </div>
         </div>
         <nav class="mt-8 md:mt-0 md:mr-8 lg:mr-12">
@@ -1062,6 +1040,7 @@
 
         const setupHeaderAnimations = () => {
           const header = document.getElementById('animated-header');
+          if (!header) return;
           const textNodes = Array.from(header.children).map(child => child.textContent.trim());
           header.innerHTML = '';
           let totalDelay = 100;
