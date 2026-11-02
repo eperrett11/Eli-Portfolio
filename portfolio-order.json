@@ -37,26 +37,26 @@
       "label": "Architecture and Landscape Studios",
       "shuffleSeed": "studio-2026-07-28-01",
       "featured": [
-        "assets/studio/render-7.webp",
         "media/Palisades.jpg",
+        "assets/studio/render-4.webp",
         "media/4C-Timberview.jpg",
         "media/Skistar Lodge Aerial.jpg",
-        "assets/studio/render-4.webp",
         "media/2B-Heli Ski Lodge.jpg",
         "media/2A-Okhissa_Lake.jpg",
         "media/VALLEY RESORT PLANE.jpg",
-        "assets/studio/render-2.webp",
+        "assets/studio/render-7.webp",
         "videos/Entertainment Center.mp4",
         "media/Emery_Yards.jpg",
         "media/Keystone Aerial.jpg",
-        "assets/studio/16.webp",
         "media/3C-Vail_Masterplan.jpg",
         "media/1B-Industrial Road.jpg",
+        "assets/studio/16.webp",
         "media/Vintage_Farms.jpg",
         "media/Lloyd_Center_Masterplan.jpg",
         "media/Hatley Pointe.jpg",
         "media/Okhissa_Lake_Lodge.jpg",
         "media/Stagecoach Aerial.jpg",
+        "assets/studio/render-2.webp",
         "media/Industrial Road Patio.jpg",
         "media/Kiroro Aerial.jpg",
         "videos/Oakley Vision Performance Center.mp4",
@@ -261,19 +261,19 @@
     },
     "assets/studio/render-7.webp": {
       "aspectRatio": 0.798828125,
-      "title": "Mountain Bike Trail Berm"
+      "title": "Mapleton Bike Park"
     },
     "assets/studio/render-4.webp": {
       "aspectRatio": 1.7716262975778547,
-      "title": "Mountain Bike Trail Jumps"
+      "title": "Mapleton Bike Park"
     },
     "assets/studio/render-2.webp": {
       "aspectRatio": 0.80126953125,
-      "title": "Mountain Bike Trail Through the Trees"
+      "title": "Mapleton Bike Park"
     },
     "assets/studio/16.webp": {
       "aspectRatio": 1.7762359063313096,
-      "title": "Mountain Bike Trail Switchback"
+      "title": "Mapleton Bike Park"
     }
   },
   "localImages": [
