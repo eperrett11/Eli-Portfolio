@@ -589,6 +589,10 @@
                 audiences: {}
             };
 
+            normalized.localImages = Array.isArray(manifest?.localImages)
+                ? manifest.localImages.map(normalizePortfolioPath)
+                : [];
+
             if (Array.isArray(manifest?.featured)) {
                 normalized.featured = manifest.featured.map(normalizePortfolioPath);
             }
@@ -779,6 +783,18 @@
                     }, `media/${file.name}`);
                 });
 
+                // Repository-hosted images share the existing ordering and modal behavior.
+                const localImages = (portfolioManifest.localImages || []).map(path => {
+                    const name = path.split('/').pop();
+                    return applyPortfolioOrder({
+                        type: 'image',
+                        imageUrl: path,
+                        title: formatPortfolioTitle(name.replace(/\.[^.]+$/, '')),
+                        originalName: name,
+                        description: ''
+                    }, path);
+                });
+
                 // --- Process Videos ---
                 const posterMap = new Map();
                 allVideoRepoFiles
@@ -809,7 +825,7 @@
                     }, `videos/${file.name}`);
                 });
 
-                portfolioItems = getPortfolioDisplayItems([...images, ...videos]);
+                portfolioItems = getPortfolioDisplayItems([...images, ...localImages, ...videos]);
                 
                 if (portfolioItems.length === 0) {
                    document.getElementById('loader').classList.add('hidden');

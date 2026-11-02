@@ -37,15 +37,19 @@
       "label": "Architecture and Landscape Studios",
       "shuffleSeed": "studio-2026-07-28-01",
       "featured": [
+        "assets/studio/render-7.webp",
         "media/Palisades.jpg",
         "media/4C-Timberview.jpg",
         "media/Skistar Lodge Aerial.jpg",
+        "assets/studio/render-4.webp",
         "media/2B-Heli Ski Lodge.jpg",
         "media/2A-Okhissa_Lake.jpg",
         "media/VALLEY RESORT PLANE.jpg",
+        "assets/studio/render-2.webp",
         "videos/Entertainment Center.mp4",
         "media/Emery_Yards.jpg",
         "media/Keystone Aerial.jpg",
+        "assets/studio/16.webp",
         "media/3C-Vail_Masterplan.jpg",
         "media/1B-Industrial Road.jpg",
         "media/Vintage_Farms.jpg",
@@ -254,6 +258,28 @@
     },
     "videos/2D-Adventurer_Camper_Interior_Portrait.mp4": {
       "aspectRatio": 0.5625
+    },
+    "assets/studio/render-7.webp": {
+      "aspectRatio": 0.798828125,
+      "title": "Mountain Bike Trail Berm"
+    },
+    "assets/studio/render-4.webp": {
+      "aspectRatio": 1.7716262975778547,
+      "title": "Mountain Bike Trail Jumps"
+    },
+    "assets/studio/render-2.webp": {
+      "aspectRatio": 0.80126953125,
+      "title": "Mountain Bike Trail Through the Trees"
+    },
+    "assets/studio/16.webp": {
+      "aspectRatio": 1.7762359063313096,
+      "title": "Mountain Bike Trail Switchback"
     }
-  }
+  },
+  "localImages": [
+    "assets/studio/render-7.webp",
+    "assets/studio/render-4.webp",
+    "assets/studio/render-2.webp",
+    "assets/studio/16.webp"
+  ]
 }
